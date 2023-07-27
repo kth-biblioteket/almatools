@@ -1,0 +1,45 @@
+version: '3.6'
+
+services:
+  almatools:
+    container_name: almatools
+    image: ghcr.io/kth-biblioteket/almatools:${REPO_TYPE}
+    depends_on:
+      - smartsigntools-db
+    restart: always
+    environment:
+      TZ: ${TZ}
+    env_file:
+      - almatools.env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.almatools.rule=Host(`${DOMAIN_NAME}`) && PathPrefix(`${PATHPREFIX}`)"
+      - "traefik.http.routers.almatools.entrypoints=websecure"
+      - "traefik.http.routers.almatools.tls=true"
+      - "traefik.http.routers.almatools.tls.certresolver=myresolver"
+    networks:
+      - "apps-net"
+
+  almatools-db:
+    container_name: almatools-db
+    image: mysql:8.0
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      TZ: ${TZ}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - persistent-almatools-db:/var/lib/mysql
+      - ./dbinit:/docker-entrypoint-initdb.d
+    networks:
+      - "apps-net"
+
+volumes:
+  persistent-almatools-db:
+
+networks:
+  apps-net:
+    external: true

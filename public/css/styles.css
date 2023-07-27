@@ -1,0 +1,9 @@
+@font-face {
+  font-family: "TheSans"; 
+  src: url("/smartsign/api/v1/public/TheSans-Plain-kthb.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "FarnhamDisplay-RegularOSF"; 
+  src:  url("/smartsign/api/v1/public/FarnhamDisplay-RegularOSF.ttf") format("truetype"); 
+}
