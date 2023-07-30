@@ -5,7 +5,7 @@ services:
     container_name: almatools
     image: ghcr.io/kth-biblioteket/almatools:${REPO_TYPE}
     depends_on:
-      - smartsigntools-db
+      - almatools-db
     restart: always
     environment:
       TZ: ${TZ}
