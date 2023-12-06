@@ -62,7 +62,7 @@
                     document.getElementById("errormessage").innerHTML = "Wrong credentials!";
                 }
             };
-            xhttp.open("POST", "/almtools/login");
+            xhttp.open("POST", "/almatools/login");
             xhttp.setRequestHeader("Content-type", "application/json");
             xhttp.send(JSON.stringify(credentials));
         }
