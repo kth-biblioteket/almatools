@@ -14,11 +14,11 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.almatools.rule=Host(`${DOMAIN_NAME}`) && PathPrefix(`${PATHPREFIX}`)"
-      - "traefik.http.routers.almatools.middlewares=almatools-stripprefix"
-      - "traefik.http.middlewares.almatools-stripprefix.stripprefix.prefixes=${PATHPREFIX}"
       - "traefik.http.routers.almatools.entrypoints=websecure"
       - "traefik.http.routers.almatools.tls=true"
       - "traefik.http.routers.almatools.tls.certresolver=myresolver"
+    volumes:
+      - "./config.js:/app/public/js/config.js"
     networks:
       - "apps-net"
 

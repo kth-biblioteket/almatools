@@ -26,3 +26,19 @@ ALTER TABLE `newbooks`
 
 ALTER TABLE `newbooks`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+CREATE TABLE `holdshelfnumber` (
+  `userid_encrypted` varchar(50) NOT NULL,
+  `number` int DEFAULT '0',
+  `additional_id` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS payments (
+    id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    primary_id VARCHAR(50) NOT NULL,
+    payment_id VARCHAR(50) NOT NULL UNIQUE,
+    fee_id VARCHAR(50) NOT NULL,
+    finished TINYINT(4) NOT NULL DEFAULT '0',
+    CONSTRAINT constraint_type UNIQUE (payment_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;;

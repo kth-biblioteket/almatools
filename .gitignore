@@ -3,3 +3,7 @@ node_modules
 *.env
 .DS_Store
 *.db
+dev
+Dockerfile-dev
+docker-compose-dev.yml
+package-dev.json
