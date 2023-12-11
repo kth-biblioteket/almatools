@@ -14,7 +14,7 @@ Node 16.13.2
 1.  Skapa folder på server med namnet på repot: "/local/docker/almatools"
 2.  Skapa och anpassa docker-compose.yml i foldern
 
-´´´ yml
+``` yml
 version: '3.6'
 
 services:
@@ -56,8 +56,7 @@ volumes:
 networks:
   apps-net:
     external: true
-
-´´´
+```
 3.  Skapa och anpassa .env(för composefilen) i foldern
 ```
 PATHPREFIX=/almatools
@@ -70,9 +69,10 @@ WEBHOOK_SECRET=xxxxxx
 PORT=80
 SECRET=xxxxxx
 AUTHORIZEDGROUPS=pa.anstallda.T.TR;pa.anstallda.M.MOE
+
 LDAP_API_URL=api-ref.lib.kth.se/ldap/api/v1/
 LDAPAPIKEYREAD=xxxxxx
-SOCKETIOPATH=/almatools/socket.io
+
 DATABASEHOST=almatools-db
 DB_DATABASE=almatools
 DB_USER=almatools
@@ -94,6 +94,9 @@ EXLIBRISPUBLICKEY_URL=https://api-eu.hosted.exlibrisgroup.com/auth/46KTH_INST/jw
 ALMATOOLSAPI_INTERNAL_ENDPOINT=http://almatools-api/
 
 CREATEPAYMENTURL=https://api.lib.kth.se/almatolls/v1/createpayment/
+
+APP_PATH=/almatools
+SOCKETIOPATH=/almatools/socket.io
 
 CORS_WHITELIST="https://apps.lib.kth.se, https://apps-ref.lib.kth.se, https://www.kth.se"
 ENVIRONMENT=development
