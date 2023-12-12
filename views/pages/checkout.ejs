@@ -375,7 +375,7 @@
     <script src="<%=almapaymentdata.nets.checkouturl%>"></script>
     <% if(almapaymentdata.totalamount> 0 ) { %>
         <script>
-
+            const checkpaymentUrl = '<%= config.checkpaymentUrl %>';
             document.addEventListener('DOMContentLoaded', function () {
                 const urlParams = new URLSearchParams(window.location.search);
                 const paymentId = urlParams.get('paymentId');
@@ -407,7 +407,7 @@
 
             function checkpayment(paymentId) {
                 $.ajax({
-                    url: 'http://localhost:90/v1/payment/checkpayment/' + paymentId,
+                    url: checkpaymentUrl + paymentId,
                     type: "POST",
                     dataType: 'json',
                     success: function (data) {
