@@ -130,11 +130,10 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
         try {
             //Kolla om betalning redan är utförd
             //Hämta payment
-            //const payment = await Controllers.readPayment(req.query.paymentId)
             const payment = await axios.post(process.env.ALMATOOLSAPI_INTERNAL_ENDPOINT + "v1/checkpayment/" + req.query.paymentId)
-            
+            console.log(payment)
+            console.log(payment.data.length)
             if( payment.data.length > 0) {
-                console.log(payment.data[0])
                 if (payment.data[0].finished == 1) {
                     almapaymentdata = {
                         "status": "finished",
@@ -169,7 +168,6 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
                     totalamount = almaresponse.data.total_sum
                 } else {
                     almapiurl = process.env.ALMAPIENDPOINT + 'users/' + decodedtoken.userName + '/fees/' + req.query.fee_id + '?user_id_type=all_unique&status=ACTIVE&apikey=' + process.env.ALMAAPIKEY
-                    console.log(almapiurl)
                     almaresponse = await axios.get(almapiurl)
                     totalamount = almaresponse.data.balance 
                 }
