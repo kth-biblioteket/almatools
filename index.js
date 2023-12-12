@@ -121,7 +121,10 @@ appRoutes.get("/payment", async function (req, res, next) {
 })
 
 appRoutes.get("/payment/checkout", async function (req, res, next) {
-    
+    config = {
+        "checkpaymentUrl" : process.env.CHECKPAYMENTURL,
+        "":""
+    }
     decodedtoken = await VerifyToken.verifyexlibristoken(req.query.jwt)
     if (decodedtoken!=0) {
         try {
@@ -152,7 +155,7 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
                         },
                         "language": req.query.lang || 'sv'
                     }
-                    res.render('pages/checkout',almapaymentdata);
+                    res.render('pages/checkout',{"config":config, "almapaymentdata": almapaymentdata});
                 }
 
                 //Hämta fees från Alma
@@ -192,7 +195,7 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
                     },
                     "language": req.query.lang || 'sv'
                 }
-                res.render('pages/checkout',almapaymentdata);
+                res.render('pages/checkout',{"config":config, "almapaymentdata": almapaymentdata});
             } else {
                 almapaymentdata = {
                     "status": "finished",
@@ -215,7 +218,7 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
                     },
                     "language": req.query.lang || 'sv'
                 }
-                res.render('pages/checkout',almapaymentdata);
+                res.render('pages/checkout',{"config":config, "almapaymentdata": almapaymentdata});
             }
         } catch(err) {
             almapaymentdata = {
@@ -241,7 +244,7 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
                 },
                 "language": req.query.lang || 'sv'
             }
-            res.render('pages/checkout',almapaymentdata);
+            res.render('pages/checkout',{"config":config, "almapaymentdata": almapaymentdata});
         }
     } else {
         almapaymentdata = {
@@ -266,7 +269,7 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
             },
             "language": req.query.lang || 'sv'
         }
-        res.render('pages/checkout',almapaymentdata);
+        res.render('pages/checkout',{"config":config, "almapaymentdata": almapaymentdata});
     }
     
 })
