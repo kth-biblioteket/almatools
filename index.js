@@ -121,7 +121,7 @@ appRoutes.get("/payment", async function (req, res, next) {
 })
 
 appRoutes.get("/payment/checkout", async function (req, res, next) {
-    config = {
+    let config = {
         "checkpaymentUrl" : process.env.CHECKPAYMENTURL,
         "":""
     }
@@ -132,6 +132,7 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
             //Hämta payment
             //const payment = await Controllers.readPayment(req.query.paymentId)
             const payment = await axios.post(process.env.ALMATOOLSAPI_INTERNAL_ENDPOINT + "v1/checkpayment/" + req.query.paymentId)
+            console.log(payment)s
             if( payment.data.length > 0) {
                 if (payment.data[0].finished == 1) {
                     almapaymentdata = {
