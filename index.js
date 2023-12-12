@@ -131,9 +131,9 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
             //Kolla om betalning redan är utförd
             //Hämta payment
             const payment = await axios.post(process.env.ALMATOOLSAPI_INTERNAL_ENDPOINT + "v1/checkpayment/" + req.query.paymentId)
-            payment.data = JSON.parse(payment.data)
-            if( payment.data.length > 0) {
-                if (payment.data[0].finished == 1) {
+            console.log(payment.data.status)
+            if (payment.data.status && typeof payment.data.status !== "undefined" && payment.data.status !== "") {
+                if (payment.data.finished == 1) {
                     almapaymentdata = {
                         "status": "finished",
                         "message": "The payment with paymentId " + req.query.paymentId + " is already finished",
