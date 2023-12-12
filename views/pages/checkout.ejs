@@ -391,7 +391,9 @@
                     };
                     const checkout = new Dibs.Checkout(checkoutOptions);
                     checkout.on('payment-completed', function (response) {
-                        $("#almafines").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Kollar dina avgifter...');
+                        $("#almafines").html(`<div class="alert alert-warning" role="alert">
+                                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Kollar dina avgifter...
+                                            </div>`);
                         //Skulden i Alma uppdateras via webhook
                         //Kolla om skulden i Alma är uppdaterad
                         //Visa info om betalning och eventuellt återstående skulder
@@ -415,7 +417,9 @@
                             setTimeout(checkpayment(paymentId), 2000);
                         } else {
                             //Visa betalinfo + länk till primo
-                            $("#almafines").html('<div>Skulden reglerad i bibliotekssystemet</div>')
+                            $("#almafines").html(`<div class="alert alert-success" role="alert">
+                                                    Skulden reglerad i bibliotekssystemet
+                                                </div>`)
                         }
                     },
                     error: function (err) {
