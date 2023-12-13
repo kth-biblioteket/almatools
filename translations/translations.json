@@ -2,11 +2,13 @@
     "en": {
         "bookitempublishedtext" : "Published: ",
         "bookitemtype_E_text" : "E-book",
-        "bookitemtype_P_text" : "Printed book"
+        "bookitemtype_P_text" : "Printed book",
+        "systemheader": "KTH Bibliotekets Online Payment"
     },
     "sv": {
         "bookitempublishedtext" : "Utgiven: ",
         "bookitemtype_E_text" : "E-bok",
-        "bookitemtype_P_text" : "Tryckt bok"
+        "bookitemtype_P_text" : "Tryckt bok",
+        "systemheader": "KTH Library Onlinebetalning"
     }
   }

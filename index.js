@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const VerifyToken = require('./VerifyToken');
 const VerifyAdmin = require('./VerifyAdmin');
 
+const translations = require('./translations/translations.json');
+
 const axios = require('axios');
 
 const fs = require("fs");
@@ -75,10 +77,10 @@ appRoutes.get("/payment", async function (req, res, next) {
         "gdprurl": process.env.GDPRURL,
         "labels": {
             "en": {
-                "systemheader": "KTH Bibliotekets Online Payment",
+                "systemheader": translations['en'].systemheader,
             },
             "sv":  {
-                "systemheader": "KTH Library Online Betalning",    
+                "systemheader": translations['sv'].systemheader,    
             },
         },
         "language": req.query.lang || 'sv'
@@ -131,7 +133,6 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
             //Kolla om betalning redan är utförd
             //Hämta payment
             const payment = await axios.post(process.env.ALMATOOLSAPI_INTERNAL_ENDPOINT + "v1/checkpayment/" + req.query.paymentId)
-            console.log(payment.data.status)
             if (payment.data.status && typeof payment.data.status !== "undefined" && payment.data.status !== "") {
                 if (payment.data.finished == 1) {
                     almapaymentdata = {
@@ -147,10 +148,10 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
                         "jwt": req.query.jwt,
                         "labels": {
                             "en": {
-                                "systemheader": "KTH Bibliotekets Online Payment",
+                                "systemheader": translations['en'].systemheader,
                             },
                             "sv":  {
-                                "systemheader": "KTH Library Online Betalning",    
+                                "systemheader": translations['sv'].systemheader,    
                             },
                         },
                         "language": req.query.lang || 'sv'
@@ -186,10 +187,10 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
                     "jwt": req.query.jwt,
                     "labels": {
                         "en": {
-                            "systemheader": "KTH Bibliotekets Online Payment",
+                            "systemheader": translations['en'].systemheader,
                         },
                         "sv":  {
-                            "systemheader": "KTH Library Online Betalning",    
+                            "systemheader": translations['sv'].systemheader,    
                         },
                     },
                     "language": req.query.lang || 'sv'
@@ -209,10 +210,10 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
                     "jwt": req.query.jwt,
                     "labels": {
                         "en": {
-                            "systemheader": "KTH Bibliotekets Online Payment",
+                            "systemheader": translations['en'].systemheader,
                         },
                         "sv":  {
-                            "systemheader": "KTH Library Online Betalning",    
+                            "systemheader": translations['sv'].systemheader,    
                         },
                     },
                     "language": req.query.lang || 'sv'
@@ -235,10 +236,10 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
                 "jwt": req.query.jwt,
                 "labels": {
                     "en": {
-                        "systemheader": "KTH Bibliotekets Online Payment",
+                        "systemheader": translations['en'].systemheader,
                     },
                     "sv":  {
-                        "systemheader": "KTH Library Online Betalning",    
+                        "systemheader": translations['sv'].systemheader,    
                     },
                 },
                 "language": req.query.lang || 'sv'
@@ -260,10 +261,10 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
             "jwt": req.query.jwt,
             "labels": {
                 "en": {
-                    "systemheader": "KTH Bibliotekets Online Payment",
+                    "systemheader": translations['en'].systemheader,
                 },
                 "sv":  {
-                    "systemheader": "KTH Library Online Betalning",    
+                    "systemheader": translations['sv'].systemheader,    
                 },
             },
             "language": req.query.lang || 'sv'
