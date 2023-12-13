@@ -3,12 +3,14 @@
         "bookitempublishedtext" : "Published: ",
         "bookitemtype_E_text" : "E-book",
         "bookitemtype_P_text" : "Printed book",
-        "systemheader": "KTH Bibliotekets Online Payment"
+        "systemheader": "KTH Bibliotekets Online Payment",
+        "invalidtoken": "None or invalid token"
     },
     "sv": {
         "bookitempublishedtext" : "Utgiven: ",
         "bookitemtype_E_text" : "E-bok",
         "bookitemtype_P_text" : "Tryckt bok",
-        "systemheader": "KTH Library Onlinebetalning"
+        "systemheader": "KTH Library Onlinebetalning",
+        "invalidtoken": "Ingen eller ogilitig token"
     }
   }

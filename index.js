@@ -123,6 +123,9 @@ appRoutes.get("/payment", async function (req, res, next) {
 })
 
 appRoutes.get("/payment/checkout", async function (req, res, next) {
+
+    let language = req.query.lang || 'sv'
+
     let config = {
         "checkpaymentUrl" : process.env.CHECKPAYMENTURL,
         "":""
@@ -154,7 +157,7 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
                                 "systemheader": translations['sv'].systemheader,    
                             },
                         },
-                        "language": req.query.lang || 'sv'
+                        "language": language
                     }
                     res.render('pages/checkout',{"config":config, "almapaymentdata": almapaymentdata});
                 }
@@ -193,7 +196,7 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
                             "systemheader": translations['sv'].systemheader,    
                         },
                     },
-                    "language": req.query.lang || 'sv'
+                    "language": language
                 }
                 res.render('pages/checkout',{"config":config, "almapaymentdata": almapaymentdata});
             } else {
@@ -216,7 +219,7 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
                             "systemheader": translations['sv'].systemheader,    
                         },
                     },
-                    "language": req.query.lang || 'sv'
+                    "language": language
                 }
                 res.render('pages/checkout',{"config":config, "almapaymentdata": almapaymentdata});
             }
@@ -242,14 +245,14 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
                         "systemheader": translations['sv'].systemheader,    
                     },
                 },
-                "language": req.query.lang || 'sv'
+                "language": language
             }
             res.render('pages/checkout',{"config":config, "almapaymentdata": almapaymentdata});
         }
     } else {
         almapaymentdata = {
             "status": "error",
-            "message": "None or not valid token",
+            "message": translations[language].systemheader,
             "decodedtoken": decodedtoken,
             "nets": {
                 "apiurl": process.env.NETSAPIURL,
@@ -267,7 +270,7 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
                     "systemheader": translations['sv'].systemheader,    
                 },
             },
-            "language": req.query.lang || 'sv'
+            "language": language
         }
         res.render('pages/checkout',{"config":config, "almapaymentdata": almapaymentdata});
     }
