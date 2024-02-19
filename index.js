@@ -62,7 +62,12 @@ appRoutes.get("/newbookspage", Controllers.getNewbooksList)
 appRoutes.get("/newbookscarouselpage", Controllers.getNewbooksCarousel)
 
 appRoutes.get("/payment", async function (req, res, next) {
+    let language = req.query.lang || 'sv'
     //object att skicka till template-ejs
+    let config = {
+        "createpaymentUrl" : process.env.CREATEPAYMENTURL,
+        translations: translations[language]
+    }
     let almapaymentdata = {
         "status": "",
         "message": "",
@@ -115,10 +120,6 @@ appRoutes.get("/payment", async function (req, res, next) {
         almapaymentdata.message = "None or not a valid token";
     }
 
-    config = {
-        "createpaymentUrl" : process.env.CREATEPAYMENTURL,
-        "":""
-    }
     res.render('pages/payment', {"config":config, "almapaymentdata": almapaymentdata});
 })
 
@@ -128,8 +129,9 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
 
     let config = {
         "checkpaymentUrl" : process.env.CHECKPAYMENTURL,
-        "":""
+        translations: translations[language]
     }
+
     decodedtoken = await VerifyToken.verifyexlibristoken(req.query.jwt)
     if (decodedtoken!=0) {
         try {

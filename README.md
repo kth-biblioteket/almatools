@@ -1,9 +1,11 @@
 # KTH Bibliotekets Alma Verktyg
 
-##
+## Nya böcker
 
-###
+## Alma Payment
+Hanterar betalning online för avgifter etc i Alma/Primo
 
+En länk på användarfliken i Primo skickar användaren vidare till tjänsten med information om användaren i en jwt-token. Tjänsten hämtar skulderna från Alma via API och presenterar dem på sidan med en betalningsknapp som leder till att Nets Easy's betalningslösning visas i en Iframe på sidan. Användaren betalar i Nets. Efter betalning gjorts skickar Nets tillbaks information till tjänsten via en webhook som tjänsten fångar upp och ser till att reglera skulden i Alma via API. Alma skickar ut ett email-kvitto på betalningen.
 
 #### Dependencies
 
@@ -93,7 +95,7 @@ EXLIBRISPUBLICKEY_URL=https://api-eu.hosted.exlibrisgroup.com/auth/46KTH_INST/jw
 
 ALMATOOLSAPI_INTERNAL_ENDPOINT=http://almatools-api/
 
-CREATEPAYMENTURL=https://api.lib.kth.se/almatolls/v1/createpayment/
+CREATEPAYMENTURL=https://api.lib.kth.se/almatools/v1/createpayment/
 
 APP_PATH=/almatools
 SOCKETIOPATH=/almatools/socket.io

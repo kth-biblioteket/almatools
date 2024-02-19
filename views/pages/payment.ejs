@@ -56,7 +56,7 @@
                         <div id="slideAlertPlaceholder"></div>
                         <div class="paymentinfo">
                             <div style="flex:1">
-                                Användarnamn:
+                                <%=config.translations.username%>
                             </div>
                             <div style="flex:1">
                                 <%=almapaymentdata.decodedtoken.userName%>
@@ -64,7 +64,7 @@
                         </div>
                         <div class="paymentinfo">
                             <div style="flex:1">
-                                Namn:
+                                <%=config.translations.fullname%>
                             </div>
                             <div style="flex:1">
                                 <%=almapaymentdata.decodedtoken.displayName%>
@@ -72,19 +72,19 @@
                         </div>
                         <% if(almapaymentdata.alma.total_record_count> 0) { %>
                             <div class="paymentinfo">
-                                Avgifter:
+                                <%=config.translations.fees%>
                             </div>
                             <div style="padding-bottom: 10px; overflow-x: auto;">
                                 <table>
                                     <thead>
                                         <tr>
-                                            <th>Typ</th>
-                                            <th>Titel</th>
-                                            <th>Barcode</th>
-                                            <th>Kommentar</th>
-                                            <th>Avgift</th>
+                                            <th><%=config.translations.type%></th>
+                                            <th><%=config.translations.title%></th>
+                                            <th><%=config.translations.barcode%></th>
+                                            <th><%=config.translations.comment%></th>
+                                            <th><%=config.translations.fee%></th>
                                             <% if(almapaymentdata.alma.fee.length> 1) { %>
-                                                <th>Betala</th>
+                                                <th><%=config.translations.pay%></th>
                                                 <% } %>
                                         </tr>
                                     </thead>
@@ -109,7 +109,7 @@
                                                         <button style="white-space: nowrap;" type="button"
                                                             onclick="CreatePayment('<%=almapaymentdata.alma.fee[i].id%>')"
                                                             class="btn btn-primary">
-                                                            Betala avgift
+                                                            <%=config.translations.pay_fee%>
                                                         </button>
                                                     </td>
                                                     <% } %>
@@ -121,23 +121,22 @@
                             <hr class="solid">
                             <div class="paymentinfo">
                                 <div style="flex:2;font-weight: bold;">
-                                    Att betala:
+                                    <%=config.translations.to_pay%>
                                 </div>
                                 <div style="flex:1">
                                     <%=almapaymentdata.alma.total_sum%>
                                         <%=almapaymentdata.alma.currency%>
                                 </div>
                             </div>
-                            <p>Förseningsavgifter och annat kopplat till biblioteksverksamheten är undantagna från
-                                skatteplikt för mervärdesskatt (moms)</p>
+                            <p><%=config.translations.moms_text%></p>
                             <div style="padding-bottom: 10px">
                                 <button type="button" onclick="CreatePayment()" class="btn btn-primary">
-                                    <%-almapaymentdata.alma.fee.length> 1 ? 'Betala alla avgifter' : 'Betala' %>
+                                    <%-almapaymentdata.alma.fee.length> 1 ? config.translations.pay_all_fees : config.translations.to_pay %>
                                 </button>
                             </div>
                             <%} else {%>
                                 <div style="padding-bottom: 10px">
-                                    Du har inga skulder att betala.
+                                    <%=config.translations.no_fees_to_pay%>
                                 </div>
                                 <%}%>
                     </div>
@@ -154,28 +153,26 @@
         </div>
         <footer id="articleFooter">
             <div class="articleFooterDivider"></div>
-            <h2>Kontakta oss</h2>
+            <h2><%=config.translations.contact_us%></h2>
             <p>
-                Tel: 08-790 70 88
+                <%=config.translations.phone%> 08-790 70 88
                 <br>
-                E-post: <a href="mailto:biblioteket@kth.se">biblioteket@kth.se</a>
+                <%=config.translations.email%> <a href="mailto:biblioteket@kth.se">biblioteket@kth.se</a>
                 <br>
-                Organisationsnummer: 202100-3054
+                <%=config.translations.orgnr%> 202100-3054
             </p>
             <div class="col">
                 <div class="contactInfo">
-                    <span class="label"></span><a target="_new" href="<%=almapaymentdata.tocurl%>">Villkor</a>
+                    <span class="label"></span><a target="_new" href="<%=almapaymentdata.tocurl%>"><%=config.translations.conditions%></a>
                 </div>
                 <div class="contactInfo">
-                    <span class="label"></span><a target="_new" href="<%=almapaymentdata.gdprurl%>">Behandling av
-                        personuppgifter</a>
+                    <span class="label"></span><a target="_new" href="<%=almapaymentdata.gdprurl%>"><%=config.translations.gdpr_text%></a>
                 </div>
             </div>
         </footer>
     </div>
     <script>
         const createpaymentUrl = '<%= config.createpaymentUrl %>';
-        const apiKey = '<%= config.apiKey %>';
         function alertbox(message, type, placeholder) {
             var alertPlaceholder = document.getElementById(placeholder)
             var wrapper = document.createElement('div')
@@ -196,7 +193,7 @@
                 dataType: 'json',
                 data: { fee_id: fee_id },
                 success: function (data) {
-                    window.location = '/almatools/payment/checkout?paymentId=' + data + '&jwt=' + urlParams.get('jwt') + '&fee_id=' + fee_id;
+                    window.location = '/almatools/payment/checkout?paymentId=' + data + '&jwt=' + urlParams.get('jwt') + '&fee_id=' + fee_id + "&lang=" + '<%= almapaymentdata.language%>';
                 },
                 error: function (err) {
                     alertbox(err.responseText, 'danger', 'slideAlertPlaceholder')

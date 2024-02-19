@@ -45,9 +45,9 @@
                     </div-->
                     <form style="flex:2;display:flex;justify-content:flex-end">
                         <button style="margin-right:10px" type="button"
-                            onclick="location.href= '/almatools/payment?jwt=<%=almapaymentdata.jwt%>'"
+                            onclick="location.href= '/almatools/payment?jwt=<%=almapaymentdata.jwt%>&lang=<%=almapaymentdata.language%>'"
                             class="btn btn-primary">
-                            Tillbaks till skulder
+                            <%=config.translations.back_to_fees%>
                         </button>
                     </form>
                 </div>
@@ -62,7 +62,7 @@
                             <div style="flex:2">
                                 <div class="paymentinfo">
                                     <div style="flex:1">
-                                        Användarnamn:
+                                        <%=config.translations.username%>
                                     </div>
                                     <div style="flex:1">
                                         <%=almapaymentdata.decodedtoken.userName%>
@@ -70,7 +70,7 @@
                                 </div>
                                 <div class="paymentinfo">
                                     <div style="flex:1">
-                                        Namn:
+                                        <%=config.translations.fullname%>
                                     </div>
                                     <div style="flex:1">
                                         <%=almapaymentdata.decodedtoken.displayName%>
@@ -78,21 +78,20 @@
                                 </div>
                                 <div id="almafines" class="paymentinfo">
                                     <div style="flex:1;font-weight: bold;">
-                                        Att betala:
+                                        <%=config.translations.to_pay%>
                                     </div>
                                     <div style="flex:1">
                                         <%=almapaymentdata.totalamount%> SEK
                                     </div>
                                 </div>
-                                <p>Förseningsavgifter och annat kopplat till biblioteksverksamheten är undantagna från
-                                    skatteplikt för mervärdesskatt (moms)</p>
+                                <p><%=config.translations.moms_text%></p>
                                 <div id="checkout-container-div">
                                 </div>
                             </div>
                         </div>
                         <% } else { %>
                             <div style="padding-bottom: 10px">
-                                Du har inga skulder att betala.
+                                <%=config.translations.no_fees_to_pay%>
                             </div>
                             <% } %>
                                 <% } else { %>
@@ -108,21 +107,20 @@
         </div>
         <footer id="articleFooter">
             <div class="articleFooterDivider"></div>
-            <h2>Kontakta oss</h2>
+            <h2><%=config.translations.contact_us%></h2>
             <p>
-                Tel: 08-790 70 88
+                <%=config.translations.phone%> 08-790 70 88
                 <br>
-                E-post: <a href="mailto:biblioteket@kth.se">biblioteket@kth.se</a>
+                <%=config.translations.email%> <a href="mailto:biblioteket@kth.se">biblioteket@kth.se</a>
                 <br>
-                Organisationsnummer: 202100-3054
+                <%=config.translations.orgnr%> 202100-3054
             </p>
             <div class="col">
                 <div class="contactInfo">
-                    <span class="label"></span><a target="_new" href="<%=almapaymentdata.tocurl%>">Villkor</a>
+                    <span class="label"></span><a target="_new" href="<%=almapaymentdata.tocurl%>"><%=config.translations.conditions%></a>
                 </div>
                 <div class="contactInfo">
-                    <span class="label"></span><a target="_new" href="<%=almapaymentdata.gdprurl%>">Behandling av
-                        personuppgifter</a>
+                    <span class="label"></span><a target="_new" href="<%=almapaymentdata.gdprurl%>"><%=config.translations.gdpr_text%></a>
                 </div>
             </div>
         </footer>
