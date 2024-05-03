@@ -36,7 +36,7 @@ async function logout(req, res) {
 // Kodsnutt läggs in som html-block i polopoly
 async function getNewbooksList(req, res) {
     try {
-        let result = await Model.readNewbooks(req)
+        let result = await Models.readNewbooks(req)
         let lang = req.query.lang || 'sv'
         let almatoolsconfig = {
             showwithnocover : req.query.showwithnocover || 'true',
