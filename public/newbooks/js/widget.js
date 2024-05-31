@@ -421,6 +421,7 @@ function createbookcarousel(type) {
             jQuery(".kthbookshelf").height(parseInt(jQuery(".kthbookshelf").width())/1.6)
 
             //Sätt storlek på font beroende på bredd på karusell items
+            /*
             if (parseInt(jQuery(".kthbookshelf a").width()) < 80 ) {
                 jQuery(".kthbookshelf").css('fontSize', 6);
             } else if (parseInt(jQuery(".kthbookshelf a").width()) < 150 ) {
@@ -432,6 +433,7 @@ function createbookcarousel(type) {
             } else {
                 jQuery(".kthbookshelf").css('fontSize', parseInt(window.$newbooks.nocoverfontsize));
             }
+            */
 
             jQuery(".kthbookshelf").css('maxHeight', parseInt(window.$newbooks.maxshelfheight));
 
