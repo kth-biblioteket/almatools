@@ -420,20 +420,14 @@ function createbookcarousel(type) {
             //Sätt höjd på karusell beroende på bredd
             jQuery(".kthbookshelf").height(parseInt(jQuery(".kthbookshelf").width())/1.6)
 
-            //Sätt storlek på font beroende på bredd på karusell items
-            /*
-            if (parseInt(jQuery(".kthbookshelf a").width()) < 80 ) {
+            //Sätt storlek på font beroende på bredd på karusell
+            if (parseInt(jQuery(".kthbookshelf").width()) < 200 ) {
                 jQuery(".kthbookshelf").css('fontSize', 6);
-            } else if (parseInt(jQuery(".kthbookshelf a").width()) < 150 ) {
+            } else if (parseInt(jQuery(".kthbookshelf").width()) < 500 ) {
                 jQuery(".kthbookshelf").css('fontSize', 9);
-            } else if (parseInt(jQuery(".kthbookshelf a").width()) < 250 ) {
-                jQuery(".kthbookshelf").css('fontSize', 12);
-            } else if (parseInt(jQuery(".kthbookshelf a").width()) < 400 ) {
-                jQuery(".kthbookshelf").css('fontSize', 15);
             } else {
                 jQuery(".kthbookshelf").css('fontSize', parseInt(window.$newbooks.nocoverfontsize));
             }
-            */
 
             jQuery(".kthbookshelf").css('maxHeight', parseInt(window.$newbooks.maxshelfheight));
 
