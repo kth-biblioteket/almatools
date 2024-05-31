@@ -468,10 +468,14 @@ function doneResizing(){
     if (parseInt(window.$newbooks.nocoverfontsize) > 0) {
         jQuery(".kthbookshelf").css('fontSize', parseInt(window.$newbooks.nocoverfontsize));
     } else {
-        if (parseInt(jQuery(".kthbookshelf").width()) < 200 ) {
+        if (parseInt(jQuery(".kthbookshelf a").width()) < 80 ) {
             jQuery(".kthbookshelf").css('fontSize', 6);
-        } else if (parseInt(jQuery(".kthbookshelf").width()) < 500 ) {
+        } else if (parseInt(jQuery(".kthbookshelf a").width()) < 150 ) {
             jQuery(".kthbookshelf").css('fontSize', 9);
+        } else if (parseInt(jQuery(".kthbookshelf a").width()) < 250 ) {
+            jQuery(".kthbookshelf").css('fontSize', 12);
+        } else if (parseInt(jQuery(".kthbookshelf a").width()) < 400 ) {
+            jQuery(".kthbookshelf").css('fontSize', 15);
         }
     }
     //rensa listan
