@@ -88,6 +88,8 @@
             position: relative;
             padding: 20px;
             margin-bottom: 10px;
+            box-sizing: unset;
+            line-height: 1rem;
         }
         
         .bookdata>div {
