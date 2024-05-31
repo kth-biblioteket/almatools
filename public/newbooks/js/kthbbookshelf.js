@@ -1909,7 +1909,7 @@ function SimpleItem(data, context) {
 		}
         var w = image.width;
 		var h = image.height;
-		if (image.src != 'https://api.lib.kth.se/almatools/images/book200.png') {
+		if (image.src != 'https://apps.lib.kth.se/almatools/newbooks/images/book200.png') {
             a.width(self['width'])
 			.height(self['height'])
 			.append(jQuery(image).css({
@@ -1933,7 +1933,7 @@ function SimpleItem(data, context) {
         image.src = data['image'];
     }
     else {
-        image.src = 'https://api.lib.kth.se/almatools/images/book200.png'
+        image.src = 'https://apps.lib.kth.se/almatools/newbooks/images/book200.png'
     }
 	
 	if (image.complete) {
