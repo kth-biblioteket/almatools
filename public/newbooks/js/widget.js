@@ -465,12 +465,14 @@ function doneResizing(){
     jQuery(".kthbookshelf").height(parseInt(jQuery(".kthbookshelf").width())/1.6)
 
     //Sätt storlek på font beroende på bredd på karusell
-    if (parseInt(jQuery(".kthbookshelf").width()) < 200 ) {
-        jQuery(".kthbookshelf").css('fontSize', 6);
-    } else if (parseInt(jQuery(".kthbookshelf").width()) < 500 ) {
-        jQuery(".kthbookshelf").css('fontSize', 9);
-    } else {
+    if (parseInt(window.$newbooks.nocoverfontsize) > 0) {
         jQuery(".kthbookshelf").css('fontSize', parseInt(window.$newbooks.nocoverfontsize));
+    } else {
+        if (parseInt(jQuery(".kthbookshelf").width()) < 200 ) {
+            jQuery(".kthbookshelf").css('fontSize', 6);
+        } else if (parseInt(jQuery(".kthbookshelf").width()) < 500 ) {
+            jQuery(".kthbookshelf").css('fontSize', 9);
+        }
     }
     //rensa listan
     x.innerHTML = "";
