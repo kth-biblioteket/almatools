@@ -1926,7 +1926,7 @@ function SimpleItem(data, context) {
         } else {
             a.width(self['width'])
 			.height(self['height'])
-			.append(`<div class="bookshelfshape shape ">${self['data'].title}</div>`);
+			.append(`<div class="bookshelfshape shape "><div class="booktitle">${self['data'].title}</div></div>`);
             
         }
 		context.refresh();

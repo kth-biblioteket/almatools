@@ -1923,7 +1923,7 @@ function SimpleItem(data, context) {
 			//Bredden på bok sätts till
             a.width(self['width'])
 			.height(self['height'])
-			.append(`<div class="bookshelfshape shape "><div class="booktitle">${self['data'].title}<div></div>`);
+			.append(`<div class="bookshelfshape shape "><div class="booktitle">${self['data'].title}</div></div>`);
             
         }
 		context.refresh();
