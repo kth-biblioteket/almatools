@@ -57,6 +57,8 @@ appRoutes.post("/login", Controllers.login)
 
 appRoutes.post("/logout", VerifyToken.verifyToken, Controllers.logout)
 
+appRoutes.post("/almalogin", Controllers.almalogin)
+
 appRoutes.get("/newbookspage", Controllers.getNewbooksList)
 
 appRoutes.get("/newbookscarouselpage", Controllers.getNewbooksCarousel)

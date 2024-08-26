@@ -11,13 +11,13 @@ function verifyToken(req, res, next) {
         || req.cookies.jwt
 
     if (!token)
-        return res.render('login',{logindata: {"status":"ok", "message":"No token"}})
+        return res.render('pages/login',{logindata: {"status":"ok", "message":"No token"}})
 
     if (req.headers['x-access-token'] || req.cookies.jwt) {
         jwt.verify(token, process.env.SECRET, async function (err, decoded) {
             if (err) {
                 res.clearCookie("jwt")
-                res.render('login',{logindata: {"status":"error",  message: 'Failed to authenticate token, ' + err.message}})
+                res.render('pages/login',{logindata: {"status":"error",  message: 'Failed to authenticate token, ' + err.message}})
                 // res.status(401).send({ auth: false, message: 'Failed to authenticate token, ' + err.message });
             }
 

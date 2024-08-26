@@ -32,6 +32,22 @@ async function logout(req, res) {
     .json({ message: "Success" });
 }
 
+async function almalogin(req, res) {
+    try {
+        const response = await axios.get(`https://api-eu.hosted.exlibrisgroup.com/almaws/v1/users/${req.body.user}?user_id_type=all_unique&view=full&expand=none&format=json&apikey=${process.env.ALMAAPIKEY}`)
+        if(response.data.pin_number == req.body.pin_number) {
+            res.status(200)
+            res.json({ message: "Success" });
+        } else {
+            res.status(401)
+            res.json({ message: "Unauthorized" });
+        }
+    } catch(err) {
+        res.status(500)
+        res.json({ message: "Error" });
+    }
+}
+
 // Lista som visar nya böcker på https://www.kth.se/biblioteket/soka-vardera/nya-bocker-pa-kth-biblioteket-1.1175846
 // Kodsnutt läggs in som html-block i polopoly
 async function getNewbooksList(req, res) {
@@ -119,6 +135,7 @@ async function getNewbooksCarousel(req, res) {
 module.exports = {
     login,
     logout,
+    almalogin,
     getNewbooksList,
     getNewbooksCarousel
 };
