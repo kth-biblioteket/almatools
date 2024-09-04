@@ -43,8 +43,12 @@ async function almalogin(req, res) {
             res.json({ message: "Unauthorized" });
         }
     } catch(err) {
-        res.status(500)
-        res.json({ message: "Error" });
+        if (err.response && err.response.status === 400) {
+            res.status(400).json({ message: err.response.data.errorList.error[0].errorMessage });
+        } else {
+            // Handle other types of errors
+            res.status(500).json({ message: "Error" });
+        }
     }
 }
 
