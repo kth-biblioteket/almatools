@@ -84,6 +84,14 @@ appRoutes.get("/index", (req, res) => {
     res.render('pages/almatools', { user: req.session.user.decodedIdToken });
 });
 
+//Användarprofil
+appRoutes.get("/userprofile", (req, res) => {
+    if (!req.session.user) {
+        return res.redirect(process.env.APP_PATH + '/login');
+    }
+    res.render('pages/userprofile', { user: req.session.user.decodedIdToken });
+});
+
 //Login mot OIDC
 appRoutes.get(`/login`, (req, res) => {
     const state = crypto.randomBytes(16).toString('hex');
@@ -105,11 +113,8 @@ appRoutes.get(`/login`, (req, res) => {
 appRoutes.get('/', async (req, res) => {
     const { code, state } = req.query;
   
-    console.log('Session state: ' +  req.session.state)
-    console.log('Recieved state: ' + state)
     if (state !== req.session.state) {
-      console.error('State mismatch. Possible CSRF attack.');
-      return res.status(403).send('State mismatch. Possible CSRF attack.');
+      return res.status(403).send('CSRF-error.');
     }
   
     const tokenUrl = OIDC_CONFIG.tokenURL;
@@ -129,9 +134,6 @@ appRoutes.get('/', async (req, res) => {
       const { access_token, id_token } = response.data;
       const decodedAccessToken = decodeToken(access_token);
       const decodedIdToken = decodeToken(id_token);
-  
-      console.log('Decoded Access Token:', decodedAccessToken);
-      console.log('Decoded ID Token:', decodedIdToken);
   
       req.session.user = {
         accessToken: access_token,

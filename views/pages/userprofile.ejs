@@ -160,7 +160,35 @@
                     <!-- User Info Card -->
                     <div class="card">
                         <div class="card-header text-center">
-                            Welcome to the Dashboard
+                            Welcome to the User Dashboard
+                        </div>
+                        <div class="card-body">
+                            <% if (user) { %>
+                                <h5 class="card-title">Hello, <%= user.unique_name[0] %>!</h5>
+                                <p class="card-text">Here are your details:</p>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item"><strong>Full Name:</strong> <%= user.unique_name[0] %></li>
+                                    <li class="list-group-item"><strong>Username:</strong> <%= user.username %></li>
+                                    <li class="list-group-item"><strong>KTH ID:</strong> <%= user.kthid %></li>
+                                    <li class="list-group-item"><strong>Email:</strong> <%= user.email %></li>
+                                    <li class="list-group-item"><strong>Affiliation(s):</strong> 
+                                        <ul>
+                                            <% user.affiliation.forEach(function(aff) { %>
+                                                <li><%= aff %></li>
+                                            <% }); %>
+                                        </ul>
+                                    </li>
+                                    <li class="list-group-item"><strong>Member Of:</strong> 
+                                        <ul>
+                                            <% user.memberOf.forEach(function(group) { %>
+                                                <li><%= group %></li>
+                                            <% }); %>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            <% } else { %>
+                                <p class="card-text">You are not logged in. Please log in to access your information.</p>
+                            <% } %>
                         </div>
                     </div>
                 </div>
