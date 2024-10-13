@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>KTH Bibliotekets Alma Verktyg</title>
     <meta charset="utf-8">
@@ -137,8 +138,8 @@
     <div>
         <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
             <a class="navbar-brand" href="#">
-                <img alt="" src="images/kthlogo.jpg" width="75" height="75"
-                    class="d-inline-block align-top"> KTH Bibliotekets Alma Verktyg
+                <img alt="" src="images/kthlogo.jpg" width="75" height="75" class="d-inline-block align-top"> KTH
+                Bibliotekets Alma Verktyg
             </a>
             <button aria-controls="basic-navbar-nav" type="button" aria-label="Toggle navigation"
                 class="navbar-toggler collapsed"><span class="navbar-toggler-icon"></span></button>
@@ -156,92 +157,108 @@
         </nav>
         <section>
             <div class="container py-5">
-              <div class="row">
-                <div class="col-lg-4">
-                  <div class="card mb-4">
-                    <div class="card-body text-center">
-                      <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
-                        class="rounded-circle img-fluid" style="width: 150px;">
-                      <h5 class="my-3"><%= user.unique_name[0] %></h5>
-                      <p class="text-muted mb-1">Title</p>
-                      <p class="text-muted mb-4">Campus valhallavägen</p>
-                    </div>
-                  </div>
-                  <div class="card mb-4 mb-lg-0">
-                    <div class="card-body p-0">
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-8">
-                  <div class="card mb-4">
-                    <div class="card-body">
-                      <div class="row">
-                        <div class="col-sm-3">
-                          <p class="mb-0">Full Name</p>
-                        </div>
-                        <div class="col-sm-9">
-                          <p class="text-muted mb-0"><%= user.unique_name[0] %></p>
-                        </div>
-                      </div>
-                      <hr>
-                      <div class="row">
-                        <div class="col-sm-3">
-                          <p class="mb-0">Email</p>
-                        </div>
-                        <div class="col-sm-9">
-                          <p class="text-muted mb-0"><%= user.email %></p>
-                        </div>
-                      </div>
-                      <hr>
-                      <div class="row">
-                        <div class="col-sm-3">
-                          <p class="mb-0">Username</p>
-                        </div>
-                        <div class="col-sm-9">
-                          <p class="text-muted mb-0"><%= user.username %></p>
-                        </div>
-                      </div>
-                      <hr>
-                      <div class="row">
-                        <div class="col-sm-3">
-                          <p class="mb-0">KTH-id</p>
-                        </div>
-                        <div class="col-sm-9">
-                          <p class="text-muted mb-0"><%= user.kthid %></p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-6">
-                        <div class="card mb-4 mb-md-0">
-                            <div class="card-body">
-                                <p class="mb-4"><span class="text-primary font-italic me-1">Affiliation</span> List
-                                </p>
-                                <ul class="list-group list-group-flush rounded-3">
-                                    <% user.affiliation.forEach(function(affiliation) { %>
-                                        <li class="list-group-item d-flex justify-content-between align-items-center p-3"><%= affiliation %></li>
-                                    <% }) %>
-                                </ul>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="card mb-4">
+                            <div class="card-body text-center">
+                                <i class="bi bi-person-circle" style="font-size: 150px; color: #007bff;"></i>
+                                <h5 class="my-3">
+                                    <%= user.unique_name[0] %>
+                                </h5>
+                                <p class="text-muted mb-1">Title</p>
+                                <p class="text-muted mb-4">Campus valhallavägen</p>
                             </div>
-                          </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card mb-4 mb-md-0">
-                            <div class="card-body">
-                                <p class="mb-4"><span class="text-primary font-italic me-1">Roles</span> List
-                                </p>
-                                <ul class="list-group list-group-flush rounded-3">
-                                    <% user.memberOf.forEach(function(member) { %>
-                                        <li class="list-group-item d-flex justify-content-between align-items-center p-3"><%= member %></li>
-                                    <% }) %>
-                                </ul>
+                        </div>
+                        <div class="card mb-4 mb-lg-0">
+                            <div class="card-body p-0">
                             </div>
-                          </div>
+                        </div>
                     </div>
-                  </div>
+                    <div class="col-lg-8">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <p class="mb-0">Full Name</p>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <p class="text-muted mb-0">
+                                            <%= user.unique_name[0] %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <p class="mb-0">Email</p>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <p class="text-muted mb-0">
+                                            <%= user.email %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <p class="mb-0">Username</p>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <p class="text-muted mb-0">
+                                            <%= user.username %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <p class="mb-0">KTH-id</p>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <p class="text-muted mb-0">
+                                            <%= user.kthid %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card mb-4 mb-md-0">
+                                    <div class="card-body">
+                                        <p class="mb-4"><span class="text-primary font-italic me-1">Affiliation</span>
+                                            List
+                                        </p>
+                                        <ul class="list-group list-group-flush rounded-3">
+                                            <% user.affiliation.forEach(function(affiliation) { %>
+                                                <li
+                                                    class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                                    <%= affiliation %>
+                                                </li>
+                                                <% }) %>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card mb-4 mb-md-0">
+                                    <div class="card-body">
+                                        <p class="mb-4"><span class="text-primary font-italic me-1">Roles</span> List
+                                        </p>
+                                        <ul class="list-group list-group-flush rounded-3">
+                                            <% user.memberOf.forEach(function(member) { %>
+                                                <li
+                                                    class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                                    <%= member %>
+                                                </li>
+                                                <% }) %>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
         </section>
         <script>
@@ -251,8 +268,8 @@
                 wrapper.innerHTML = '<div class="alert alert-' + type + ' alert-dismissible" role="alert">' + message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
                 alertPlaceholder.append(wrapper)
                 setTimeout(function () {
-                    $(".alert").fadeTo(500, 0).slideUp(500, function(){
-                        $(this).remove(); 
+                    $(".alert").fadeTo(500, 0).slideUp(500, function () {
+                        $(this).remove();
                     });
                 }, 2000);
             }
@@ -260,7 +277,7 @@
             function logout() {
                 var xhttp = new XMLHttpRequest();
                 xhttp.onload = function () {
-                    if (xhttp.status == 401) {  
+                    if (xhttp.status == 401) {
                     }
                     location.href = "/"
                 };
