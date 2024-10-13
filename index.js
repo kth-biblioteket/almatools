@@ -78,7 +78,10 @@ const decodeToken = (token) => {
 
 //Landningssida för inloggade användare
 appRoutes.get("/index", (req, res) => {
-    res.render('pages/almatools', { user: req.session.user });
+    if (!req.session.user) {
+        return res.redirect('/login');
+    }
+    res.render('pages/almatools', { user: req.session.user.decodedIdToken });
 });
 
 //Login mot OIDC
@@ -137,7 +140,7 @@ appRoutes.get('/', async (req, res) => {
         decodedIdToken,
       };
   
-      res.render('pages/almatools', { user: req.session.user });
+      res.render('pages/almatools', { user: req.session.user.decodedIdToken });
     } catch (error) {
       console.error('Error exchanging authorization code:', error.response.data);
       res.status(500).send('Authentication failed.');
