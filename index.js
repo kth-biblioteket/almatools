@@ -43,7 +43,6 @@ app.use(process.env.APP_PATH, express.static(path.join(__dirname, "public")));
 
 const appRoutes = express.Router();
 
-
 app.use(session({
     secret: sessionSecret, 
     resave: false,
@@ -55,10 +54,6 @@ app.use(session({
         sameSite: 'lax'
     }
 }));
-
-
-app.use(passport.initialize());
-app.use(passport.session());
 
 const OIDC_CONFIG = {
     issuer: process.env.OIDC_ISSUER,
