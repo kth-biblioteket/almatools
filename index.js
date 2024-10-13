@@ -79,7 +79,7 @@ const decodeToken = (token) => {
 //Landningssida för inloggade användare
 appRoutes.get("/index", (req, res) => {
     if (!req.session.user) {
-        return res.redirect('/login');
+        return res.redirect(process.env.APP_PATH + '/login');
     }
     res.render('pages/almatools', { user: req.session.user.decodedIdToken });
 });
