@@ -150,7 +150,7 @@
                 </div>
 
                 <form style="flex:2;display:flex;justify-content:flex-end">
-                    <button type="button" class="btn btn-outline-success" onclick="logout()">Logout</button>
+                    <a href="<%= env.app_path %>/logout" class="btn btn-outline-success" role="button">Logout</a>
                 </form>
             </div>
             <div id="gradientBorder"></div>
@@ -262,30 +262,6 @@
             </div>
         </section>
         <script>
-            function alert(message, type, placeholder) {
-                var alertPlaceholder = document.getElementById(placeholder)
-                var wrapper = document.createElement('div')
-                wrapper.innerHTML = '<div class="alert alert-' + type + ' alert-dismissible" role="alert">' + message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
-                alertPlaceholder.append(wrapper)
-                setTimeout(function () {
-                    $(".alert").fadeTo(500, 0).slideUp(500, function () {
-                        $(this).remove();
-                    });
-                }, 2000);
-            }
-
-            function logout() {
-                var xhttp = new XMLHttpRequest();
-                xhttp.onload = function () {
-                    if (xhttp.status == 401) {
-                    }
-                    location.href = "/"
-                };
-                xhttp.open("POST", "/logout", true);
-                xhttp.setRequestHeader('Content-Type', 'application/json');
-                xhttp.send();
-            }
-
             const thisSessionId = Math.random().toString(36).substr(2, 9);
             const socket = io('', { path: "/almatools/socket.io" })
             socket.on("connect", () => {

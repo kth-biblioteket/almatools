@@ -76,6 +76,10 @@ const decodeToken = (token) => {
     }
 };
 
+app.locals.env = {
+    app_ath: process.env.APP_PATH // or whatever your path is
+};
+
 //Landningssida för inloggade användare
 appRoutes.get("/index", (req, res) => {
     if (!req.session.user) {
