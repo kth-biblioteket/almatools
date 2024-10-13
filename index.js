@@ -82,7 +82,7 @@ appRoutes.get("/index", (req, res) => {
 });
 
 //Login mot OIDC
-app.get(`${basePath}/login`, (req, res) => {
+app.get(`/login`, (req, res) => {
     const state = crypto.randomBytes(16).toString('hex');
     req.session.state = state;
   
@@ -145,7 +145,7 @@ app.get('/', async (req, res) => {
 });
 
 //Logga ut från OIDC
-app.get(`${basePath}/logout`, (req, res) => {
+app.get(`/logout`, (req, res) => {
     req.session.destroy(err => {
       if (err) {
         return res.status(500).send('Could not log out.');
