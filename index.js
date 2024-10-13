@@ -93,7 +93,7 @@ appRoutes.get("/userprofile", (req, res) => {
     if (!req.session.user) {
         return res.redirect(process.env.APP_PATH + '/login');
     }
-    res.render('pages/userprofile', { user: req.session.user.decodedIdToken, app });
+    res.render('pages/userprofile', { user: req.session.user.decodedIdToken });
 });
 
 //Login mot OIDC
