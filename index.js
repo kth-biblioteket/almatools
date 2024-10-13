@@ -137,7 +137,7 @@ appRoutes.get('/', async (req, res) => {
         decodedIdToken,
       };
   
-      res.redirect(`/index`);
+      res.render('pages/index', { user: req.session.user });
     } catch (error) {
       console.error('Error exchanging authorization code:', error.response.data);
       res.status(500).send('Authentication failed.');
