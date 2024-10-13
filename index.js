@@ -139,8 +139,7 @@ appRoutes.get('/', async (req, res) => {
         decodedAccessToken,
         decodedIdToken,
       };
-  
-      res.render('pages/almatools', { user: req.session.user.decodedIdToken });
+      return res.redirect(process.env.APP_PATH + '/index');
     } catch (error) {
       console.error('Error exchanging authorization code:', error.response.data);
       res.status(500).send('Authentication failed.');
