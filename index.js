@@ -1,4 +1,4 @@
-require('dotenv').config({path:'almatools.env'})
+require('dotenv').config({ path: 'almatools.env' })
 
 const jwt = require("jsonwebtoken");
 const VerifyToken = require('./VerifyToken');
@@ -18,7 +18,13 @@ const bodyParser = require('body-parser');
 const Controllers = require('./Controllers');
 const cookieParser = require("cookie-parser");
 
+const session = require('express-session');
+const qs = require('qs');
+const crypto = require('crypto');
+
 const app = express()
+
+const sessionSecret = process.env.SESSION_SECRET
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -31,31 +37,127 @@ app.set("view engine", "ejs");
 
 const whitelist = process.env.CORS_WHITELIST.split(", ");
 
-app.use(cors({origin: whitelist}));
+app.use(cors({ origin: whitelist }));
 
 app.use(process.env.APP_PATH, express.static(path.join(__dirname, "public")));
 
 const appRoutes = express.Router();
 
-appRoutes.get("/", VerifyToken.verifyToken, async function (req, res, next) {
-    try {
-        res.render('pages/almatools', {logindata: {"status": "ok", "message": "login"} });
-    } catch(err) {
-        res.render('pages/login', {logindata: {"status": "ok", "message": "login"}})
+
+app.use(session({
+    secret: sessionSecret, 
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
+        sameSite: 'lax'
     }
-    /*
+}));
+
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+const OIDC_CONFIG = {
+    issuer: process.env.OIDC_ISSUER,
+    authorizationURL: process.env.OIDC_AUTHORIZATIONURL,
+    tokenURL: process.env.OIDC_TOKENURL,
+    userInfoURL: process.env.OIDC_USERINFOURL,
+    clientID: process.env.OIDC_CLIENT_ID,
+    clientSecret: process.env.OIDC_CLIENT_SECRET, 
+    redirectURI: process.env.OIDC_CALLBACKURL,
+    scope: 'openid profile email',
+};
+
+const decodeToken = (token) => {
     try {
-        let verify = await VerifyAdmin(req, res, next)
-        res.render('almatools', {logindata: {"status": "ok", "message": "login"} });
-    } catch(err) {
-        res.render('login', {logindata: {"status": "ok", "message": "login"}})
+      const decoded = jwt.decode(token);
+      return decoded;
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
     }
-    */
+};
+
+//Landningssida för inloggade användare
+appRoutes.get("/index", (req, res) => {
+    res.render('pages/index', { user: req.session.user });
 });
 
-appRoutes.post("/login", Controllers.login)
+//Login mot OIDC
+app.get(`${basePath}/login`, (req, res) => {
+    const state = crypto.randomBytes(16).toString('hex');
+    req.session.state = state;
+  
+    const authUrl = `${OIDC_CONFIG.authorizationURL}?` + qs.stringify({
+      client_id: OIDC_CONFIG.clientID,
+      redirect_uri: OIDC_CONFIG.redirectURI,
+      response_type: 'code',
+      scope: OIDC_CONFIG.scope,
+      state: state,
+    });
+  
+    console.log('Redirecting to OIDC provider:', authUrl);
+    res.redirect(authUrl);
+});
 
-appRoutes.post("/logout", VerifyToken.verifyToken, Controllers.logout)
+//Callback för OIDC
+app.get('/', async (req, res) => {
+    const { code, state } = req.query;
+  
+    console.log('Session state: ' +  req.session.state)
+    console.log('Recieved state: ' + state)
+    if (state !== req.session.state) {
+      console.error('State mismatch. Possible CSRF attack.');
+      return res.status(403).send('State mismatch. Possible CSRF attack.');
+    }
+  
+    const tokenUrl = OIDC_CONFIG.tokenURL;
+    const tokenData = {
+      grant_type: 'authorization_code',
+      code: code,
+      redirect_uri: OIDC_CONFIG.redirectURI,
+      client_id: OIDC_CONFIG.clientID,
+      client_secret: OIDC_CONFIG.clientSecret,
+    };
+  
+    try {
+      const response = await axios.post(tokenUrl, qs.stringify(tokenData), {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      });
+  
+      const { access_token, id_token } = response.data;
+      const decodedAccessToken = decodeToken(access_token);
+      const decodedIdToken = decodeToken(id_token);
+  
+      console.log('Decoded Access Token:', decodedAccessToken);
+      console.log('Decoded ID Token:', decodedIdToken);
+  
+      req.session.user = {
+        accessToken: access_token,
+        idToken: id_token,
+        decodedAccessToken,
+        decodedIdToken,
+      };
+  
+      res.redirect(`/index`);
+    } catch (error) {
+      console.error('Error exchanging authorization code:', error.response.data);
+      res.status(500).send('Authentication failed.');
+    }
+});
+
+//Logga ut från OIDC
+app.get(`${basePath}/logout`, (req, res) => {
+    req.session.destroy(err => {
+      if (err) {
+        return res.status(500).send('Could not log out.');
+      }
+      res.redirect(`${OIDC_CONFIG.issuer}/oauth2/logout?post_logout_redirect_uri=${encodeURIComponent(OIDC_CONFIG.redirectURI)}`);
+    });
+});
 
 appRoutes.post("/almalogin", Controllers.almalogin)
 
@@ -67,7 +169,7 @@ appRoutes.get("/payment", async function (req, res, next) {
     let language = req.query.lang || 'sv'
     //object att skicka till template-ejs
     let config = {
-        "createpaymentUrl" : process.env.CREATEPAYMENTURL,
+        "createpaymentUrl": process.env.CREATEPAYMENTURL,
         translations: translations[language]
     }
     let almapaymentdata = {
@@ -86,8 +188,8 @@ appRoutes.get("/payment", async function (req, res, next) {
             "en": {
                 "systemheader": translations['en'].systemheader,
             },
-            "sv":  {
-                "systemheader": translations['sv'].systemheader,    
+            "sv": {
+                "systemheader": translations['sv'].systemheader,
             },
         },
         "language": req.query.lang || 'sv'
@@ -97,22 +199,22 @@ appRoutes.get("/payment", async function (req, res, next) {
     let decodedtoken
     try {
         decodedtoken = await VerifyToken.verifyexlibristoken(req.query.jwt)
-    } catch(err) {
+    } catch (err) {
         console.log(err)
     }
 
-    if (decodedtoken!=0) {
+    if (decodedtoken != 0) {
         almapaymentdata.decodedtoken = decodedtoken;
 
         //Hämta fees från Alma
-        alma_apiurl = process.env.ALMAPIENDPOINT + 'users/' +decodedtoken.userName + '/fees?user_id_type=all_unique&status=ACTIVE&apikey=' + process.env.ALMAAPIKEY;
+        alma_apiurl = process.env.ALMAPIENDPOINT + 'users/' + decodedtoken.userName + '/fees?user_id_type=all_unique&status=ACTIVE&apikey=' + process.env.ALMAAPIKEY;
         console.log(alma_apiurl)
-        try {   
+        try {
             const almaresponse = await axios.get(alma_apiurl)
             almapaymentdata.status = "success";
             almapaymentdata.message = "ok";
             almapaymentdata.alma = almaresponse.data;
-        } catch(err) {
+        } catch (err) {
             console.log(err.message);
             almapaymentdata.status = "error";
             almapaymentdata.message = err.message;
@@ -122,7 +224,7 @@ appRoutes.get("/payment", async function (req, res, next) {
         almapaymentdata.message = "None or not a valid token";
     }
 
-    res.render('pages/payment', {"config":config, "almapaymentdata": almapaymentdata});
+    res.render('pages/payment', { "config": config, "almapaymentdata": almapaymentdata });
 })
 
 appRoutes.get("/payment/checkout", async function (req, res, next) {
@@ -130,12 +232,12 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
     let language = req.query.lang || 'sv'
 
     let config = {
-        "checkpaymentUrl" : process.env.CHECKPAYMENTURL,
+        "checkpaymentUrl": process.env.CHECKPAYMENTURL,
         translations: translations[language]
     }
 
     decodedtoken = await VerifyToken.verifyexlibristoken(req.query.jwt)
-    if (decodedtoken!=0) {
+    if (decodedtoken != 0) {
         try {
             //Kolla om betalning redan är utförd
             //Hämta payment
@@ -157,26 +259,26 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
                             "en": {
                                 "systemheader": translations['en'].systemheader,
                             },
-                            "sv":  {
-                                "systemheader": translations['sv'].systemheader,    
+                            "sv": {
+                                "systemheader": translations['sv'].systemheader,
                             },
                         },
                         "language": language
                     }
-                    res.render('pages/checkout',{"config":config, "almapaymentdata": almapaymentdata});
+                    res.render('pages/checkout', { "config": config, "almapaymentdata": almapaymentdata });
                 }
 
                 //Hämta fees från Alma
                 let almaresponse
                 totalamount = 0;
-                if(req.query.fee_id == 'all') {
+                if (req.query.fee_id == 'all') {
                     almapiurl = process.env.ALMAPIENDPOINT + 'users/' + decodedtoken.userName + '/fees?user_id_type=all_unique&status=ACTIVE&apikey=' + process.env.ALMAAPIKEY
                     almaresponse = await axios.get(almapiurl)
                     totalamount = almaresponse.data.total_sum
                 } else {
                     almapiurl = process.env.ALMAPIENDPOINT + 'users/' + decodedtoken.userName + '/fees/' + req.query.fee_id + '?user_id_type=all_unique&status=ACTIVE&apikey=' + process.env.ALMAAPIKEY
                     almaresponse = await axios.get(almapiurl)
-                    totalamount = almaresponse.data.balance 
+                    totalamount = almaresponse.data.balance
                 }
 
                 almapaymentdata = {
@@ -196,13 +298,13 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
                         "en": {
                             "systemheader": translations['en'].systemheader,
                         },
-                        "sv":  {
-                            "systemheader": translations['sv'].systemheader,    
+                        "sv": {
+                            "systemheader": translations['sv'].systemheader,
                         },
                     },
                     "language": language
                 }
-                res.render('pages/checkout',{"config":config, "almapaymentdata": almapaymentdata});
+                res.render('pages/checkout', { "config": config, "almapaymentdata": almapaymentdata });
             } else {
                 almapaymentdata = {
                     "status": "finished",
@@ -219,15 +321,15 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
                         "en": {
                             "systemheader": translations['en'].systemheader,
                         },
-                        "sv":  {
-                            "systemheader": translations['sv'].systemheader,    
+                        "sv": {
+                            "systemheader": translations['sv'].systemheader,
                         },
                     },
                     "language": language
                 }
-                res.render('pages/checkout',{"config":config, "almapaymentdata": almapaymentdata});
+                res.render('pages/checkout', { "config": config, "almapaymentdata": almapaymentdata });
             }
-        } catch(err) {
+        } catch (err) {
             almapaymentdata = {
                 "status": "error",
                 "message": err.message,
@@ -245,13 +347,13 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
                     "en": {
                         "systemheader": translations['en'].systemheader,
                     },
-                    "sv":  {
-                        "systemheader": translations['sv'].systemheader,    
+                    "sv": {
+                        "systemheader": translations['sv'].systemheader,
                     },
                 },
                 "language": language
             }
-            res.render('pages/checkout',{"config":config, "almapaymentdata": almapaymentdata});
+            res.render('pages/checkout', { "config": config, "almapaymentdata": almapaymentdata });
         }
     } else {
         almapaymentdata = {
@@ -270,15 +372,15 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
                 "en": {
                     "systemheader": translations['en'].systemheader,
                 },
-                "sv":  {
-                    "systemheader": translations['sv'].systemheader,    
+                "sv": {
+                    "systemheader": translations['sv'].systemheader,
                 },
             },
             "language": language
         }
-        res.render('pages/checkout',{"config":config, "almapaymentdata": almapaymentdata});
+        res.render('pages/checkout', { "config": config, "almapaymentdata": almapaymentdata });
     }
-    
+
 })
 app.use(process.env.APP_PATH, appRoutes);
 
@@ -288,7 +390,7 @@ const server = app.listen(process.env.PORT || 3002, function () {
 });
 
 // Initiera socketserver
-const io = socketIo(server, {path: process.env.SOCKETIOPATH})
+const io = socketIo(server, { path: process.env.SOCKETIOPATH })
 
 const sockets = {}
 

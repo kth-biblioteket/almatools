@@ -158,7 +158,9 @@
             <div style="flex:2;padding-right:10px">
                     <div class="card" style="margin-bottom:10px">
                         <div class="card-body" style="display:flex;flex-direction:row;padding-bottom:40px">
-                            Fyll med innehåll
+                            <% if (user) { %>
+                                <p>Hello, <%= user.unique_name[0] %>! You are logged in.</p>
+                              <% } %>
                         </div>
                     </div>
             </div>
