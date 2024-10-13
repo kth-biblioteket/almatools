@@ -116,8 +116,12 @@ appRoutes.get(`/login`, (req, res) => {
 //Callback för OIDC
 appRoutes.get('/', async (req, res) => {
 
+    if (req.session && req.session.user) {
+        return res.redirect(process.env.APP_PATH + '/index');
+    }
+
     if (!req.session || !req.session.state) {
-        return res.redirect(process.env.APP_PATH + '/login'); // Adjust the path to your login page
+        return res.redirect(process.env.APP_PATH + '/login');
     }
 
     const { code, state } = req.query;
