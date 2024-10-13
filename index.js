@@ -77,7 +77,7 @@ const decodeToken = (token) => {
 };
 
 app.locals.env = {
-    app_ath: process.env.APP_PATH // or whatever your path is
+    app_path: process.env.APP_PATH // or whatever your path is
 };
 
 //Landningssida för inloggade användare
@@ -93,7 +93,7 @@ appRoutes.get("/userprofile", (req, res) => {
     if (!req.session.user) {
         return res.redirect(process.env.APP_PATH + '/login');
     }
-    res.render('pages/userprofile', { user: req.session.user.decodedIdToken });
+    res.render('pages/userprofile', { user: req.session.user.decodedIdToken, app });
 });
 
 //Login mot OIDC
