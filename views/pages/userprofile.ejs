@@ -162,33 +162,57 @@
                         <div class="card-header text-center">
                             Welcome to the User Dashboard
                         </div>
-                        <div class="card-body">
-                            <% if (user) { %>
-                                <h5 class="card-title">Hello, <%= user.unique_name[0] %>!</h5>
-                                <p class="card-text">Here are your details:</p>
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item"><strong>Full Name:</strong> <%= user.unique_name[0] %></li>
-                                    <li class="list-group-item"><strong>Username:</strong> <%= user.username %></li>
-                                    <li class="list-group-item"><strong>KTH ID:</strong> <%= user.kthid %></li>
-                                    <li class="list-group-item"><strong>Email:</strong> <%= user.email %></li>
-                                    <li class="list-group-item"><strong>Affiliation(s):</strong> 
-                                        <ul>
-                                            <% user.affiliation.forEach(function(aff) { %>
-                                                <li><%= aff %></li>
-                                            <% }); %>
-                                        </ul>
-                                    </li>
-                                    <li class="list-group-item"><strong>Member Of:</strong> 
-                                        <ul>
-                                            <% user.memberOf.forEach(function(group) { %>
-                                                <li><%= group %></li>
-                                            <% }); %>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            <% } else { %>
-                                <p class="card-text">You are not logged in. Please log in to access your information.</p>
-                            <% } %>
+                        <div class="container mt-4" id="content">
+                            <div class="row">
+                                <!-- Card 1: User Info -->
+                                <div class="col-md-4">
+                                    <div class="card mb-4">
+                                        <div class="card-header">
+                                            User Information
+                                        </div>
+                                        <div class="card-body">
+                                            <% if (user) { %>
+                                                <p><strong>Name:</strong> <%= user.unique_name[0] %></p>
+                                                <p><strong>KTH ID:</strong> <%= user.kthid %></p>
+                                                <p><strong>Username:</strong> <%= user.username %></p>
+                                                <p><strong>Email:</strong> <%= user.email %></p>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                    
+                                <!-- Card 2: Affiliations -->
+                                <div class="col-md-4">
+                                    <div class="card mb-4">
+                                        <div class="card-header">
+                                            Affiliations
+                                        </div>
+                                        <div class="card-body">
+                                            <ul>
+                                                <% user.affiliation.forEach(function(affiliation) { %>
+                                                    <li><%= affiliation %></li>
+                                                <% }) %>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                    
+                                <!-- Card 3: Member Of -->
+                                <div class="col-md-4">
+                                    <div class="card mb-4">
+                                        <div class="card-header">
+                                            Member Of
+                                        </div>
+                                        <div class="card-body">
+                                            <ul>
+                                                <% user.memberOf.forEach(function(member) { %>
+                                                    <li><%= member %></li>
+                                                <% }) %>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
