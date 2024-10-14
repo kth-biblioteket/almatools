@@ -36,8 +36,7 @@ async function getActivatePatron(req, res) {
     try {
         res.render('pages/activatepatron', 
         {
-            user: req.session.user ? req.session.user.decodedIdToken : null,
-            books: result
+            user: req.session.user ? req.session.user.decodedIdToken : null
         })
     } catch (err) {
         res.send("error: " + err)
