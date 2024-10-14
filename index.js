@@ -101,10 +101,17 @@ appRoutes.get("/userprofile", (req, res) => {
 appRoutes.get(`/login`, (req, res) => {
     const state = crypto.randomBytes(16).toString('hex');
     req.session.state = state;
+
+    const { action } = req.query;
   
+    let redirectUri = OIDC_CONFIG.redirectURI;
+    if (action === 'activatepatron') {
+        redirectUri += `?action=activatepatron`; // Append action to redirect URI
+    }
+    
     const authUrl = `${OIDC_CONFIG.authorizationURL}?` + qs.stringify({
       client_id: OIDC_CONFIG.clientID,
-      redirect_uri: OIDC_CONFIG.redirectURI,
+      redirect_uri: redirectUri,
       response_type: 'code',
       scope: OIDC_CONFIG.scope,
       state: state,
@@ -117,8 +124,13 @@ appRoutes.get(`/login`, (req, res) => {
 //Callback för OIDC
 appRoutes.get('/', async (req, res) => {
 
+    const { action } = req.query;
+
     //Redan inloggad
     if (req.session && req.session.user) {
+        if (action === 'activatepatron') {
+            return res.redirect(process.env.APP_PATH + '/activatepatron');
+        }
         return res.redirect(process.env.APP_PATH + '/index');
     }
 
@@ -157,6 +169,11 @@ appRoutes.get('/', async (req, res) => {
         decodedAccessToken,
         decodedIdToken,
       };
+
+      if (action === 'activatepatron') {
+        return res.redirect(process.env.APP_PATH + '/activatepatron');
+      }
+
       return res.redirect(process.env.APP_PATH + '/index');
     } catch (error) {
       console.error('Error exchanging authorization code:', error.response.data);
@@ -173,6 +190,8 @@ appRoutes.get(`/logout`, (req, res) => {
       res.redirect(`${OIDC_CONFIG.issuer}/oauth2/logout?post_logout_redirect_uri=${encodeURIComponent(OIDC_CONFIG.redirectURI)}`);
     });
 });
+
+appRoutes.get("/activatepatron", VerifyRole(process.env.AUTHORIZEDGROUPS ? process.env.AUTHORIZEDGROUPS.split(';') : []), Controllers.getActivatePatron);
 
 appRoutes.get("/newbooksadmin", VerifyRole(process.env.AUTHORIZEDGROUPS ? process.env.AUTHORIZEDGROUPS.split(';') : []), Controllers.getNewbooksAdmin);
 

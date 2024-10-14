@@ -62,6 +62,18 @@ async function getNewbooksAdmin(req, res) {
     }
 }
 
+async function getActivatePatron(req, res) {
+    try {
+        res.render('pages/activatepatron', 
+        {
+            user: req.session.user ? req.session.user.decodedIdToken : null,
+            books: result
+        })
+    } catch (err) {
+        res.send("error: " + err)
+    }
+}
+
 async function almalogin(req, res) {
     try {
         const response = await axios.get(`https://api-eu.hosted.exlibrisgroup.com/almaws/v1/users/${req.body.user}?user_id_type=all_unique&view=full&expand=none&format=json&apikey=${process.env.ALMAAPIKEY}`)
