@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head') %>
+<body>
+  <%- include('../partials/header') %>
+
+  <main>
+    <h1>Nya böcker</h1>
+    <table id="newbooksTable" class="display">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>ISBN</th>
+          <th>Thumbnail</th>
+          <th>Activation Date</th>
+          <th>Publication Date</th>
+          <th>Booktype</th>
+          <th>Category</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% books.forEach(function(book) { %>
+        <tr>
+          <td><%= book.id %></td>
+          <td><%= book.title %></td>
+          <td><%= book.isbn %></td>
+          <td><img src="<%= book.coverurl %>" alt="<%= book.title %>" width="50"></td>
+          <td><%= book.activationdate %></td>
+          <td><%= book.publicationdate %></td>
+          <td><%= book.booktype %></td>
+          <td><%= book.category %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </main>
+  <!-- Initialize DataTables -->
+  <script>
+    $(document).ready(function() {
+      $('#newbooksTable').DataTable({
+        "paging": true,
+        "dom": '<"top"lfp>rt<"bottom"p><"clear">',
+        "searching": true,
+        "ordering": true
+      });
+    });
+  </script>
+</body>
+</html>

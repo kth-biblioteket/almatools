@@ -110,3 +110,27 @@ NODE_ENV=development
 8. Skapa deploy_prod.yml i github actions
 9. Github Actions bygger en dockerimage i github packages
 10. Starta applikationen med docker compose up -d --build i "local/docker/almatools"
+
+###### Exempel på OIDC-data
+Decoded ID Token: {
+  aud: 'xxxx',
+  iss: 'https://login.ref.ug.kth.se/adfs',
+  iat: 1728821438,
+  nbf: 1728821438,
+  exp: 1728825038,
+  auth_time: 1728821438,
+  sub: 'xxxx',
+  upn: 'tholind@ref.ug.kth.se',
+  sid: 'xxxxx',
+  unique_name: [ 'Thomas Lind', 'REF\\tholind' ],
+  kthid: 'u1f7tfgo',
+  username: 'tholind',
+  email: 'tholind@kth.se',
+  affiliation: [ 'employee', 'member', 'staff' ],
+  memberOf: [ 'pa.anstallda.T', 'pa.anstallda.T.TRAA' ],
+  apptype: 'Confidential',
+  appid: 'xxxxx',
+  authmethod: 'urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport',
+  ver: '1.0',
+  scp: 'openid'
+}

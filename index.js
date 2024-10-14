@@ -2,7 +2,7 @@ require('dotenv').config({ path: 'almatools.env' })
 
 const jwt = require("jsonwebtoken");
 const VerifyToken = require('./VerifyToken');
-const VerifyAdmin = require('./VerifyAdmin');
+const VerifyRole = require('./VerifyRole');
 
 const translations = require('./translations/translations.json');
 
@@ -77,7 +77,8 @@ const decodeToken = (token) => {
 };
 
 app.locals.env = {
-    app_path: process.env.APP_PATH // or whatever your path is
+    app_path: process.env.APP_PATH,
+    almatools_api: process.env.ALMATOOLSAPI_INTERNAL_ENDPOINT
 };
 
 //Landningssida för inloggade användare
@@ -116,10 +117,12 @@ appRoutes.get(`/login`, (req, res) => {
 //Callback för OIDC
 appRoutes.get('/', async (req, res) => {
 
+    //Redan inloggad
     if (req.session && req.session.user) {
         return res.redirect(process.env.APP_PATH + '/index');
     }
 
+    //Anropet kommer inte från server callback
     if (!req.session || !req.session.state) {
         return res.redirect(process.env.APP_PATH + '/login');
     }
@@ -170,6 +173,8 @@ appRoutes.get(`/logout`, (req, res) => {
       res.redirect(`${OIDC_CONFIG.issuer}/oauth2/logout?post_logout_redirect_uri=${encodeURIComponent(OIDC_CONFIG.redirectURI)}`);
     });
 });
+
+appRoutes.get("/newbooksadmin", VerifyRole(process.env.AUTHORIZEDGROUPS ? process.env.AUTHORIZEDGROUPS.split(';') : []), Controllers.getNewbooksAdmin);
 
 appRoutes.post("/almalogin", Controllers.almalogin)
 

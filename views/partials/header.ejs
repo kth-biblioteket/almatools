@@ -1,0 +1,29 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+    <a class="navbar-brand" href="#">
+        <img alt="" src="images/kthlogo.jpg" width="75" height="75"
+            class="d-inline-block align-top"> KTH Bibliotekets Almaverktyg
+    </a>
+    <button aria-controls="basic-navbar-nav" type="button" aria-label="Toggle navigation"
+        class="navbar-toggler collapsed"><span class="navbar-toggler-icon"></span></button>
+    <div class="navbar-collapse collapse" id="basic-navbar-nav">
+        <div class="navbar-nav">
+            <div class="nav-item">
+                <form style="flex:2;display:flex;justify-content:flex-end">
+                    <% 
+                        const userRoles = (user && user.memberOf) || [];
+                        const authorizedRoles = process.env.AUTHORIZEDGROUPS ? process.env.AUTHORIZEDGROUPS.split(';') : [];
+                        const hasAccess = authorizedRoles.some(role => userRoles.includes(role));
+                    %>
+                    <% if (hasAccess) { %>
+                        <a href="<%= env.app_path %>/newbooksadmin" class="btn btn-primary" role="button">Nya böcker</a>
+                    <% } %>
+                </form>
+            </div>
+        </div>
+
+        <form style="flex:2;display:flex;justify-content:flex-end">
+            <a href="<%= env.app_path %>/logout" class="btn btn-outline-success" role="button">Logout</a>
+        </form>
+    </div>
+    <div id="gradientBorder"></div>
+</nav>
