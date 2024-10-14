@@ -29,7 +29,7 @@
 
     <form onsubmit="return sendrequest();" method="post" action="javascript:;" name="activatepatron" id="activatepatron">
         <input type="hidden" name="token" value="" />
-        <input id="language" name="language" type="hidden" value="<%= req.session.state>">
+        <input id="language" name="language" type="hidden" value="<%= req.session.state %>">
         <div id="userinfo">
             <span style="display:inline-block" class="" for="userfullname">Inloggad som <%= user.unique_name[0] %></span><i><span id="userfullname"></span></i>
             <div id="activepatron"></div>
