@@ -32,6 +32,18 @@ async function logout(req, res) {
     .json({ message: "Success" });
 }
 
+async function getActivatePatron(req, res) {
+    try {
+        res.render('pages/activatepatron', 
+        {
+            user: req.session.user ? req.session.user.decodedIdToken : null,
+            books: result
+        })
+    } catch (err) {
+        res.send("error: " + err)
+    }
+}
+
 async function getNewbooksAdmin(req, res) {
     try {
         let result = await Models.readNewbooks(req)
@@ -53,18 +65,6 @@ async function getNewbooksAdmin(req, res) {
             nostyle: req.query.nostyle || false
         }
         res.render('pages/newbooksadmin', 
-        {
-            user: req.session.user ? req.session.user.decodedIdToken : null,
-            books: result
-        })
-    } catch (err) {
-        res.send("error: " + err)
-    }
-}
-
-async function getActivatePatron(req, res) {
-    try {
-        res.render('pages/activatepatron', 
         {
             user: req.session.user ? req.session.user.decodedIdToken : null,
             books: result
@@ -181,6 +181,7 @@ async function getNewbooksCarousel(req, res) {
 module.exports = {
     login,
     logout,
+    getActivatePatron,
     getNewbooksAdmin,
     almalogin,
     getNewbooksList,
