@@ -4,16 +4,6 @@
 <body>
     <div>
         <%- include('../partials/header') %>
-        <div class="container mt-4" id="content">
-            <div class="row">
-                <div class="col-md-8 offset-md-2">
-                    <div class="card">
-                        <div class="card-header text-center">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <script>
             const thisSessionId = Math.random().toString(36).substr(2, 9);
             const socket = io('', { path: "/almatools/socket.io" })

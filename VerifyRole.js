@@ -15,7 +15,6 @@ const VerifyRole = (requiredGroups) => {
 
              const hasRequiredGroup = requiredGroups.some(group => userGroups.includes(group));
             if (hasRequiredGroup) {
-                
                 return next();
             }
         }
