@@ -41,6 +41,8 @@ app.use(cors({ origin: whitelist }));
 
 app.use(process.env.APP_PATH, express.static(path.join(__dirname, "public")));
 
+app.use("/assets", express.static(path.join(__dirname, "node_modules/@kth/style/assets")));
+
 const appRoutes = express.Router();
 
 app.use(session({
