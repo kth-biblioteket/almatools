@@ -25,7 +25,6 @@
             <p>Not a student or staff member at KTH? <a href="https://www.kth.se/en/biblioteket/anvanda-biblioteket/registrera-dig-1.869092">Register here.</a></p>
         </div>
     </div>
-    <div class="container">Inloggad som <%= user.unique_name[0] %></div>
 
     <form onsubmit="return sendrequest();" method="post" action="javascript:;" name="activatepatron" id="activatepatron">
         <input type="hidden" name="token" value="" />
@@ -51,7 +50,7 @@
             <input class="required" type="checkbox" name="willingcheck" id="willingcheck" value="J">&nbsp;<label style="display:inline-block" class="bib_label" for="willingcheck">Jag godkänner KTH Bibliotekets <a target='_blank' href='https://www.kth.se/biblioteket/anvanda-biblioteket/anvandarvillkor-1.854843'>användarvillkor.</a></label><br>
         </div>
         <div>
-            <input id="skicka" name="skicka" type="submit" value="" >
+            <input id="skicka" name="skicka" type="submit" value="Aktivera mitt bibliotekskonto" >
         </div>
     </form>
     <div id="myModal" class="1modal" tabindex="-1">

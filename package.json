@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "build-sass": "sass --load-path node_modules public/css/main.scss public/css/main.css --no-source-map --style=compressed",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -26,6 +27,7 @@
     "socket.io": "^4.6.1",
     "connect-redis": "^7.0.0",
     "ioredis": "^5.3.1",
-    "kth-style": "^9.1.2"
+    "@kth/style": "^1.7.0",
+    "sass": "^1.79.5"
   }
 }

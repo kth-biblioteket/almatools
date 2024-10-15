@@ -8,6 +8,8 @@ RUN npm install
 
 COPY . .
 
+RUN npm run build-sass
+
 EXPOSE 80
 
 CMD ["npm", "start"]
