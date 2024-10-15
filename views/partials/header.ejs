@@ -1,12 +1,3 @@
-<form style="flex:2;display:flex;justify-content:flex-end">
-    <% const userRoles=(user && user.memberOf) || []; const authorizedRoles=process.env.AUTHORIZEDGROUPS ?
-        process.env.AUTHORIZEDGROUPS.split(';') : []; const hasAccess=authorizedRoles.some(role=>
-        userRoles.includes(role));
-        %>
-        <% if (hasAccess) { %>
-            <a href="<%= env.app_path %>/newbooksadmin" class="btn btn-primary" role="button">Nya böcker</a>
-            <% } %>
-</form>
 <header class="kth-header external">
     <div class="kth-header__container">
         <a href="/en" class="kth-logotype">
