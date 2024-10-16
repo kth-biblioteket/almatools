@@ -193,7 +193,9 @@ appRoutes.get(`/logout`, (req, res) => {
     });
 });
 
-appRoutes.get("/activatepatron", VerifyRole(process.env.AUTHORIZEDGROUPS ? process.env.AUTHORIZEDGROUPS.split(';') : []), Controllers.getActivatePatron);
+appRoutes.get("/activatepatron", Controllers.getActivatePatron);
+
+//appRoutes.get("/activatepatron", VerifyRole(process.env.AUTHORIZEDGROUPS ? process.env.AUTHORIZEDGROUPS.split(';') : []), Controllers.getActivatePatron);
 
 appRoutes.get("/newbooksadmin", VerifyRole(process.env.AUTHORIZEDGROUPS ? process.env.AUTHORIZEDGROUPS.split(';') : []), Controllers.getNewbooksAdmin);
 
