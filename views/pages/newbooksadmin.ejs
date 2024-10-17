@@ -4,9 +4,9 @@
 <body>
   <%- include('../partials/header') %>
 
-  <main>
+  <div class="kth-main-content">
     <h1>Nya böcker</h1>
-    <table id="newbooksTable" class="display">
+    <table id="newbooksTable" class="display" style="width:100%">
       <thead>
         <tr>
           <th>ID</th>
@@ -34,15 +34,20 @@
         <% }) %>
       </tbody>
     </table>
-  </main>
+  </div>
   <!-- Initialize DataTables -->
   <script>
     $(document).ready(function() {
       $('#newbooksTable').DataTable({
         "paging": true,
-        "dom": '<"top"lfp>rt<"bottom"p><"clear">',
-        "searching": true,
-        "ordering": true
+        "layout": {
+          top2Start: 'pageLength',
+          top2End: 'search',
+          topStart: 'info',
+          topEnd: 'paging',
+          bottomStart: 'info',
+          bottomEnd: 'paging'
+        }
       });
     });
   </script>
