@@ -46,23 +46,6 @@ async function getActivatePatron(req, res) {
 async function getNewbooksAdmin(req, res) {
     try {
         let result = await Models.readNewbooks(req)
-        let lang = req.query.lang || 'sv'
-        let almatoolsconfig = {
-            showwithnocover : req.query.showwithnocover || 'true',
-            primoview :  req.query.primoview || '46KTH_VU1_L',
-            target: req.query.target || '_blank',
-            nroftitlestoshow : parseInt(req.query.nroftitlestoshow) || 20,
-            min_publication_date: req.query.minpublicationdate || '2020-05-01',
-            booktype: req.query.booktype || 'all',
-            lang: req.query.lang || 'sv',
-            bookitemtype_P_text : translations[lang].bookitemtype_P_text,
-            bookitemtype_E_text : translations[lang].bookitemtype_E_text,
-            bookitempublishedtext : translations[lang].bookitempublishedtext,
-            bookimageurl: process.env.BOOKIMAGEURL,
-            book200imageurl: process.env.BOOK200IMAGEURL,
-            nojquery: req.query.nojquery || false,
-            nostyle: req.query.nostyle || false
-        }
         res.render('pages/newbooksadmin', 
         {
             user: req.session.user ? req.session.user.decodedIdToken : null,
