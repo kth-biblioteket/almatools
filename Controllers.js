@@ -63,7 +63,7 @@ async function almalogin(req, res) {
         try {
             const response = await axios.post(`${process.env.ALMAPIENDPOINT}users/${req.body.user}?user_id_type=all_unique&op=auth&apikey=${process.env.ALMAAPIKEY}`,{},{headers: {"Exl-User-Pw" : req.body.password}})
             res.status(200)
-            res.json({ message: "Success" });
+            res.json({ message: "Success", data: response.data });
         } catch(err) {
             console.log(err.response.data.errorList.error)
             res.status(401)
@@ -75,7 +75,7 @@ async function almalogin(req, res) {
             const response = await axios.get(`${process.env.ALMAPIENDPOINT}users/${req.body.user}?user_id_type=all_unique&view=full&expand=none&format=json&apikey=${process.env.ALMAAPIKEY}`)
             if(response.data.pin_number == req.body.pin_number) {
                 res.status(200)
-                res.json({ message: "Success" });
+                res.json({ message: "Success", data: response.data });
             } else {
                 res.status(401)
                 res.json({ message: "Unauthorized" });
