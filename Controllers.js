@@ -62,8 +62,9 @@ async function almalogin(req, res) {
     if (req.query.op == 'auth') {
         try {
             const response = await axios.post(`${process.env.ALMAPIENDPOINT}users/${req.body.user}?user_id_type=all_unique&op=auth&apikey=${process.env.ALMAAPIKEY}`,{},{headers: {"Exl-User-Pw" : req.body.password}})
+            const user = await axios.get(`${process.env.ALMAPIENDPOINT}users/${req.body.user}?user_id_type=all_unique&view=full&expand=none&format=json&apikey=${process.env.ALMAAPIKEY}`)
             res.status(200)
-            res.json({ message: "Success", data: response.data });
+            res.json({ message: "Success", data: user.data });
         } catch(err) {
             console.log(err.response.data.errorList.error)
             res.status(401)
