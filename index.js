@@ -144,7 +144,9 @@ appRoutes.get('/', async (req, res) => {
     const { code, state } = req.query;
   
     if (state !== req.session.state) {
-      return res.status(403).send('CSRF-error.');
+        console.warn(`CSRF validation failed for session: ${req.sessionID}`);
+        req.session.destroy(); // Optionally clear session to prevent exploits
+        return res.redirect(process.env.APP_PATH + '/login?error=csrf');
     }
   
     const tokenUrl = OIDC_CONFIG.tokenURL;
