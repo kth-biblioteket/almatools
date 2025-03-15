@@ -6,6 +6,7 @@ const translations = require('./translations/translations.json');
 const fs = require("fs");
 const path = require('path');
 const axios = require('axios')
+const jwt = require("jsonwebtoken");
 
 async function login(req, res) {
     try {
@@ -68,7 +69,7 @@ async function almalogin(req, res) {
             res.status(200)
             res.json({ message: "Success", data: user.dat, token: token });
         } catch(err) {
-            console.log(err.response.data.errorList.error)
+            console.log(err)
             res.status(401)
             res.json({ message: "Unauthorized" });
         }
