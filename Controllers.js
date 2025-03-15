@@ -67,9 +67,9 @@ async function almalogin(req, res) {
             let username = req.body.user;
             const token = jwt.sign({ username, role: 'user' }, process.env.SECRET, { expiresIn: '1h' });
             res.status(200)
-            res.json({ message: "Success", data: user.dat, token: token });
+            res.json({ message: "Success", data: user.data, token: token });
         } catch(err) {
-            console.log(err)
+            console.log(err.r)
             res.status(401)
             res.json({ message: "Unauthorized" });
         }
