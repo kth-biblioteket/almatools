@@ -45,6 +45,8 @@ app.use(process.env.APP_PATH + "/assets", express.static(path.join(__dirname, "n
 
 const appRoutes = express.Router();
 
+app.set('trust proxy', 1);
+
 app.use(session({
     secret: sessionSecret, 
     resave: false,
