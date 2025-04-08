@@ -66,7 +66,14 @@ async function almalogin(req, res) {
             const user = await axios.get(`${process.env.ALMAPIENDPOINT}users/${req.body.user}?user_id_type=all_unique&view=full&expand=none&format=json&apikey=${process.env.ALMAAPIKEY}`)
             let username = req.body.user;
             const token = jwt.sign({ username, role: 'user' }, process.env.SECRET, { expiresIn: '3h' });
-            if (user.data.user_role[0].status.value == 'ACTIVE') {
+            //En aktiv patronroll måste finnas för att kunna logga in
+            const hasActivePatronRole = user.data.user_role.some(role =>
+                role.status?.value === 'ACTIVE' &&
+                role.role_type?.value === '200' // Patron
+            );
+            //Ska vara en icke kth-användare(Not affiliated with KTH = 30)
+            const isNonKth = user.data.user_group?.value === '30';
+            if (hasActivePatronRole && isNonKth) {
                 res.status(200)
                 res.json({ message: "Success", data: user.data, token: token });
             } else {
