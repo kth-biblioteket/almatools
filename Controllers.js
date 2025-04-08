@@ -73,12 +73,18 @@ async function almalogin(req, res) {
             );
             //Ska vara en icke kth-användare(Not affiliated with KTH = 30)
             const isNonKth = user.data.user_group?.value === '30';
-            if (hasActivePatronRole && isNonKth) {
-                res.status(200)
-                res.json({ message: "Success", data: user.data, token: token });
+
+            if (isNonKth) {
+                if (hasActivePatronRole) {
+                    res.status(200)
+                    res.json({ message: "Success", data: user.data, token: token });
+                } else {
+                    res.status(402)
+                    res.json({ message: "You need to activate your account, contact the library" });
+                }
             } else {
-                res.status(402)
-                res.json({ message: "You need to activate your account, contact the library" });
+                res.status(403)
+                res.json({ message: "Only external users can login" });
             }
         } catch(err) {
             console.log(err.r)
