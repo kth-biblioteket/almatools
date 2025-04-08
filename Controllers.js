@@ -70,7 +70,7 @@ async function almalogin(req, res) {
                 res.status(200)
                 res.json({ message: "Success", data: user.data, token: token });
             } else {
-                res.status(401)
+                res.status(402)
                 res.json({ message: "You need to activate your account, contact the library" });
             }
         } catch(err) {
