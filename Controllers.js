@@ -66,13 +66,13 @@ async function almalogin(req, res) {
             const user = await axios.get(`${process.env.ALMAPIENDPOINT}users/${req.body.user}?user_id_type=all_unique&view=full&expand=none&format=json&apikey=${process.env.ALMAAPIKEY}`)
             let username = req.body.user;
             const token = jwt.sign({ username, role: 'user' }, process.env.SECRET, { expiresIn: '3h' });
-            //if (user.data.user_role[0].status.value == 'ACTIVE') {
+            if (user.data.user_role[0].status.value == 'ACTIVE') {
                 res.status(200)
                 res.json({ message: "Success", data: user.data, token: token });
-            //} else {
-            //    res.status(401)
-            //    res.json({ message: "You need to activate your account, contact the library" });
-            //}
+            } else {
+                res.status(401)
+                res.json({ message: "You need to activate your account, contact the library" });
+            }
         } catch(err) {
             console.log(err.r)
             res.status(401)
