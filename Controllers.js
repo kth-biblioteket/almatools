@@ -87,7 +87,7 @@ async function almalogin(req, res) {
                 res.json({ message: "Only external users can login" });
             }
         } catch(err) {
-            console.log(err.r)
+            console.log(err)
             res.status(401)
             res.json({ message: "Unauthorized" });
         }
