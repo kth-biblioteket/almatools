@@ -61,10 +61,11 @@ async function almalogin(req, res) {
    
     //Logga in med password
     if (req.query.op == 'auth') {
+        let username = req.body.user;
         try {
             const response = await axios.post(`${process.env.ALMAPIENDPOINT}users/${req.body.user}?user_id_type=all_unique&op=auth&apikey=${process.env.ALMAAPIKEY}`,{},{headers: {"Exl-User-Pw" : req.body.password}})
             const user = await axios.get(`${process.env.ALMAPIENDPOINT}users/${req.body.user}?user_id_type=all_unique&view=full&expand=none&format=json&apikey=${process.env.ALMAAPIKEY}`)
-            let username = req.body.user;
+            
             const token = jwt.sign({ username, role: 'user' }, process.env.SECRET, { expiresIn: '3h' });
             //En aktiv patronroll måste finnas för att kunna logga in
             const hasActivePatronRole = user.data.user_role.some(role =>
@@ -87,9 +88,17 @@ async function almalogin(req, res) {
                 res.json({ message: "Only external users can login" });
             }
         } catch(err) {
-            console.log(err)
-            res.status(401)
-            res.json({ message: "Unauthorized" });
+            if(err.response) {
+                if(err.response.status == 400) {
+                    console.log(JSON.stringify({ message: "Unauthorized", username: username, error: err.response.data}))
+                    res.status(401)
+                    res.json({ message: "Unauthorized"});
+                } 
+            } else {
+                    console.log(err)
+                    res.status(404)
+                    res.json({ message: "Error" });
+            }
         }
     } else {
         //Logga in med pin
