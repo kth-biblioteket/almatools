@@ -144,6 +144,8 @@
                     };
                     const checkout = new Dibs.Checkout(checkoutOptions);
                     checkout.on('payment-completed', function (response) {
+                        //Skrolla upp till toppen av sidan när betalningen är klar
+                        window.scrollTo(0, 0);
                         $("#almafines").html(`<div class="alert alert-warning" role="alert">
                                                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Kollar dina avgifter...
                                             </div>`);
