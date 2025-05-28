@@ -29,8 +29,7 @@
             <div class="navcontainer">
                 <a class="navbar-brand" href="#">
                     <img alt="" src="/almatools/images/kthlogo_marinbla.svg" width="75" height="75"
-                        class="d-inline-block align-top"><%- almapaymentdata.language=='sv' ?
-                        almapaymentdata.labels.sv.systemheader :almapaymentdata.labels.en.systemheader %>
+                        class="d-inline-block align-top"><%- almapaymentdata?.language === 'sv' ? almapaymentdata?.labels?.sv?.systemheader : almapaymentdata?.labels?.en?.systemheader %>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -56,7 +55,7 @@
         </nav>
         <div style="flex:2;padding-right:10px">
             <div class="card" style="margin-bottom:10px">
-                <% if(almapaymentdata.status=="success" ) { %>
+                <% if(typeof almapaymentdata !== 'undefined' && almapaymentdata.status=="success" ) { %>
                     <% if(almapaymentdata.totalamount> 0) { %>
                         <div class="card-body" style="display:flex;flex-direction:row;padding-bottom:40px">
                             <div style="flex:2">
@@ -158,7 +157,9 @@
 
                     });
                 } else {
-                    $("#almafines").html("Expected a paymentId");
+                    $("#almafines").html(`<div class="alert alert-warning" role="alert">
+                        Betalnings-ID saknas. Vänligen försök igen från startsidan.
+                    </div>`);
                 }
             });
 
@@ -169,7 +170,7 @@
                     dataType: 'json',
                     success: function (data) {
                         if (data.finished == 0) {
-                            setTimeout(checkpayment(paymentId), 2000);
+                            setTimeout(() => checkpayment(paymentId), 2000);
                         } else {
                             //Visa resultat från reglering i Alma
                             $("#almafines").html(`<div class="alert alert-success" role="alert">
@@ -179,6 +180,9 @@
                     },
                     error: function (err) {
                         console.log(err);
+                        $("#almafines").html(`<div class="alert alert-danger" role="alert">
+                            Ett fel uppstod vid kontroll av betalningen. Försök igen senare.
+                        </div>`);
                     }
                 });
             }

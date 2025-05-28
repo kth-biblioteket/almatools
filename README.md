@@ -82,7 +82,7 @@ DB_PASSWORD=xxxxxx
 DB_ROOT_PASSWORD=xxxxxx
 DB_UPDATE_PATH=/dbupdate/update.sql
 
-ALMAPIENDPOINT=https://api-eu.hosted.exlibrisgroup.com/almaws/v1/
+ALMA_API_ENDPOINT=https://api-eu.hosted.exlibrisgroup.com/almaws/v1/
 ALMAAPIKEY=xxxxxx
 
 NETSCHECKOUTKEY=test-checkout-key-xxxxxxxxxx

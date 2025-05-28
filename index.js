@@ -249,7 +249,7 @@ appRoutes.get("/payment", async function (req, res, next) {
         almapaymentdata.decodedtoken = decodedtoken;
 
         //Hämta fees från Alma
-        alma_apiurl = process.env.ALMAPIENDPOINT + 'users/' + decodedtoken.userName + '/fees?user_id_type=all_unique&status=ACTIVE&apikey=' + process.env.ALMAAPIKEY;
+        alma_apiurl = process.env.ALMA_API_ENDPOINT + 'users/' + decodedtoken.userName + '/fees?user_id_type=all_unique&status=ACTIVE&apikey=' + process.env.ALMAAPIKEY;
         console.log(alma_apiurl)
         try {
             const almaresponse = await axios.get(alma_apiurl)
@@ -278,7 +278,7 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
         translations: translations[language]
     }
 
-    decodedtoken = await VerifyToken.verifyexlibristoken(req.query.jwt)
+    let decodedtoken = await VerifyToken.verifyexlibristoken(req.query.jwt)
     if (decodedtoken != 0) {
         try {
             //Kolla om betalning redan är utförd
@@ -314,11 +314,13 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
                 let almaresponse
                 totalamount = 0;
                 if (req.query.fee_id == 'all') {
-                    almapiurl = process.env.ALMAPIENDPOINT + 'users/' + decodedtoken.userName + '/fees?user_id_type=all_unique&status=ACTIVE&apikey=' + process.env.ALMAAPIKEY
+                    //Hämta alla fees från ALMA
+                    almapiurl = process.env.ALMA_API_ENDPOINT + 'users/' + decodedtoken.userName + '/fees?user_id_type=all_unique&status=ACTIVE&apikey=' + process.env.ALMAAPIKEY
                     almaresponse = await axios.get(almapiurl)
                     totalamount = almaresponse.data.total_sum
                 } else {
-                    almapiurl = process.env.ALMAPIENDPOINT + 'users/' + decodedtoken.userName + '/fees/' + req.query.fee_id + '?user_id_type=all_unique&status=ACTIVE&apikey=' + process.env.ALMAAPIKEY
+                    //Hämta en specifik fee från ALMA
+                    almapiurl = process.env.ALMA_API_ENDPOINT + 'users/' + decodedtoken.userName + '/fees/' + req.query.fee_id + '?user_id_type=all_unique&status=ACTIVE&apikey=' + process.env.ALMAAPIKEY
                     almaresponse = await axios.get(almapiurl)
                     totalamount = almaresponse.data.balance
                 }

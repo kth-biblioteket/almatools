@@ -63,8 +63,8 @@ async function almalogin(req, res) {
     if (req.query.op == 'auth') {
         let username = req.body.user;
         try {
-            const response = await axios.post(`${process.env.ALMAPIENDPOINT}users/${req.body.user}?user_id_type=all_unique&op=auth&apikey=${process.env.ALMAAPIKEY}`,{},{headers: {"Exl-User-Pw" : req.body.password}})
-            const user = await axios.get(`${process.env.ALMAPIENDPOINT}users/${req.body.user}?user_id_type=all_unique&view=full&expand=none&format=json&apikey=${process.env.ALMAAPIKEY}`)
+            const response = await axios.post(`${process.env.ALMA_API_ENDPOINT}users/${req.body.user}?user_id_type=all_unique&op=auth&apikey=${process.env.ALMAAPIKEY}`,{},{headers: {"Exl-User-Pw" : req.body.password}})
+            const user = await axios.get(`${process.env.ALMA_API_ENDPOINT}users/${req.body.user}?user_id_type=all_unique&view=full&expand=none&format=json&apikey=${process.env.ALMAAPIKEY}`)
             
             const token = jwt.sign({ username, role: 'user' }, process.env.SECRET, { expiresIn: '3h' });
             //En aktiv patronroll måste finnas för att kunna logga in
@@ -103,7 +103,7 @@ async function almalogin(req, res) {
     } else {
         //Logga in med pin
         try {
-            const response = await axios.get(`${process.env.ALMAPIENDPOINT}users/${req.body.user}?user_id_type=all_unique&view=full&expand=none&format=json&apikey=${process.env.ALMAAPIKEY}`)
+            const response = await axios.get(`${process.env.ALMA_API_ENDPOINT}users/${req.body.user}?user_id_type=all_unique&view=full&expand=none&format=json&apikey=${process.env.ALMAAPIKEY}`)
             if(response.data.pin_number == req.body.pin_number) {
                 res.status(200)
                 res.json({ message: "Success", data: response.data });
