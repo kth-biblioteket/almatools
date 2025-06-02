@@ -26,7 +26,7 @@ hr.solid {
 }
 
 a {
-    text-decoration: none;
+    text-decoration: underline;
     color: rgb(0, 108, 183)
 }
 
@@ -149,7 +149,6 @@ h2 {
 
 footer#articleFooter {
     clear: both;
-    font-family: "Open Sans", Arial, "Helvetica Neue", helvetica, sans-serif;
     font-size: 1rem;
     font-weight: 400;
     color: #000;
@@ -159,7 +158,6 @@ footer#articleFooter {
 }
 
 footer h2 {
-    font-family: "Open Sans", Arial, "Helvetica Neue", helvetica, sans-serif;
     font-size: 1.25rem;
     font-weight: 600;
     color: #000;
