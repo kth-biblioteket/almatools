@@ -1,0 +1,16 @@
+<script>
+    function switchLanguage() {
+        const url = new URL(window.location.href);
+        const currentLang = url.searchParams.get("lang");
+
+        // Toggle between 'en' and 'sv'
+        const newLang = currentLang === "sv" ? "en" : "sv";
+
+        // Set the new language parameter
+        url.searchParams.set("lang", newLang);
+
+        // Redirect to the new URL
+        window.location.href = url.toString();
+    }
+
+</script>
