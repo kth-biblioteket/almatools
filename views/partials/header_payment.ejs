@@ -1,0 +1,138 @@
+<header class="kth-header external">
+    <div>
+        <div class="kth-header__container">
+            <a href="<%= process.env.APP_PATH %>/" class="kth-logotype">
+                <figure>
+                    <img alt="To KTH's start page" width="64" height="64" src="/almatools/assets/logotype/logotype-white.svg">
+                </figure>
+            </a>
+            <div class="kth-mega-menu" aria-label="Main menu">
+                <h3>KTH Bibliotekets Online Betalning</h2>
+                <!--ul>
+                    <li>
+                        <button data-id="1.202249" class="kth-menu-item dropdown">
+                            <span>
+                               Online payment
+                            </span>
+                        </button>
+                    </li>
+                </u-->
+            </div>
+
+            <!-- Mobile menu -->
+            <!--nav class="kth-mega-menu--collapsable">
+                <dialog class="kth-mobile-menu">
+                    <div class="kth-mobile-menu__navigation">
+                        <button class="kth-icon-button close" title="Close" aria-label="Close">
+                            <span class="kth-visually-hidden">Close</span>
+                        </button>
+                    </div>
+                    <div class="kth-mobile-menu__content">
+                        <ul class="kth-mobile-menu__items">
+                            <li>
+                                <button class="kth-mobile-menu__item" data-id="1.202249">
+                                    <span>
+                                        Payment
+                                    </span>
+                                </button>
+                                <dialog class="kth-menu-panel--modal">
+                                    <button class="kth-icon-button close" title="Close" aria-label="Close">
+                                        <span class="kth-visually-hidden">Close</span>
+                                    </button>
+                                    <div class="kth-menu-panel__content"></div>
+                                </dialog>
+                            </li>
+                        </ul>
+                    </div>
+                </dialog>
+                <dialog class="kth-mobile-menu details" data-id="1.202249">
+                    <div class="kth-mobile-menu__navigation">
+                        <button class="kth-button back">Main menu</button>
+                        <button class="kth-icon-button close" title="Close" aria-label="Close">
+                            <span class="kth-visually-hidden">Close</span>
+                        </button>
+                    </div>
+                    <div class="kth-mobile-menu__header">
+                        <a href="/en/studies">
+                            <h2>
+                                Main menu
+                            </h2>
+                        </a>
+                    </div>
+                    <div class="kth-mobile-menu__content">
+                        <div class="kth-mobile-menu__cortina-content">
+                            <div class="columnSplitterWrapper" data-cid="1.853601" lang="sv-SE">
+                                <div class="columnSplitter  using4Columns ">
+                                    <div class="col c1">
+                                        <div class="block list links" data-cid="1.853600" lang="sv-SE">
+                                            <ul>
+                                                <li><a href="newbooksadmin">Payment</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </dialog>
+            </nav-->
+            <!--button class="kth-menu-item menu collapsable">
+                <span>Menu</span>
+            </button-->
+        </div>
+    </div>
+    <script>!function (e, t) { if ("function" == typeof define && define.amd) define("hoverintent", ["module"], t); else if ("undefined" != typeof exports) t(module); else { var n = { exports: {} }; t(n), e.hoverintent = n.exports } }(this, function (e) { "use strict"; var t = Object.assign || function (e) { for (var t = 1; t < arguments.length; t++) { var n = arguments[t]; for (var o in n) Object.prototype.hasOwnProperty.call(n, o) && (e[o] = n[o]) } return e }; e.exports = function (e, n, o) { function i(e, t) { return y && (y = clearTimeout(y)), b = 0, p ? void 0 : o.call(e, t) } function r(e) { m = e.clientX, d = e.clientY } function u(e, t) { if (y && (y = clearTimeout(y)), Math.abs(h - m) + Math.abs(E - d) < x.sensitivity) return b = 1, p ? void 0 : n.call(e, t); h = m, E = d, y = setTimeout(function () { u(e, t) }, x.interval) } function s(t) { return L = !0, y && (y = clearTimeout(y)), e.removeEventListener("mousemove", r, !1), 1 !== b && (h = t.clientX, E = t.clientY, e.addEventListener("mousemove", r, !1), y = setTimeout(function () { u(e, t) }, x.interval)), this } function c(t) { return L = !1, y && (y = clearTimeout(y)), e.removeEventListener("mousemove", r, !1), 1 === b && (y = setTimeout(function () { i(e, t) }, x.timeout)), this } function v(t) { L || (p = !0, n.call(e, t)) } function a(t) { !L && p && (p = !1, o.call(e, t)) } function f() { e.addEventListener("focus", v, !1), e.addEventListener("blur", a, !1) } function l() { e.removeEventListener("focus", v, !1), e.removeEventListener("blur", a, !1) } var m, d, h, E, L = !1, p = !1, T = {}, b = 0, y = 0, x = { sensitivity: 7, interval: 100, timeout: 0, handleFocus: !1 }; return T.options = function (e) { var n = e.handleFocus !== x.handleFocus; return x = t({}, x, e), n && (x.handleFocus ? f() : l()), T }, T.remove = function () { e && (e.removeEventListener("mouseover", s, !1), e.removeEventListener("mouseout", c, !1), l()) }, e && (e.addEventListener("mouseover", s, !1), e.addEventListener("mouseout", c, !1)), T } });
+    </script>
+    <script>"use strict"; function closeAllDialogs() { document.querySelectorAll("dialog").forEach((e => e.close())) } function addEventListeners(e) { const t = e.querySelector(".kth-icon-button.close"); e.addEventListener("keydown", (t => { "Escape" === t.key && e.close() })), t instanceof HTMLButtonElement && t.addEventListener("click", (() => { closeAllDialogs() })) } function addNonModalEventListeners(e, t) { addEventListeners(e), t.addEventListener("click", (t => { t.preventDefault(), e.open ? closeAllDialogs() : (closeAllDialogs(), e.show()) })), document.addEventListener("click", (n => { !e.open || n.composedPath().includes(t) || n.composedPath().includes(e) || (n.preventDefault(), closeAllDialogs()) })) } function addModalEventListeners(e, t, n) { const o = e.querySelector(".kth-button.back"); addEventListeners(e), t.addEventListener("click", (t => { t.preventDefault(), closeAllDialogs(), e.showModal() })), o instanceof HTMLButtonElement && o.addEventListener("click", (() => { e.close(), n && n.showModal() })) } function setNavigationPanels(e, t) { if (e) { for (const e of t) { if (!(e instanceof HTMLElement)) continue; const t = e.nextElementSibling; t instanceof HTMLDialogElement && addNonModalEventListeners(t, e) } e.addEventListener("focusout", (function (t) { const n = t.relatedTarget; n && n instanceof Node && !e.contains(n) && closeAllDialogs() })) } } function initModal(e, t) { e instanceof HTMLElement && t instanceof HTMLDialogElement && addModalEventListeners(t, e) } function initModals(e, t) { if (!t || t instanceof HTMLDialogElement) for (const n of e) { if (!(n instanceof HTMLElement)) continue; const e = n.getAttribute("data-id"), o = document.querySelector(`.kth-mobile-menu[data-id='${e}']`); if (!(o instanceof HTMLDialogElement)) return; addModalEventListeners(o, n, t) } } 
+        document.querySelectorAll(".kth-menu-item[data-id], .kth-menu-item--modal[data-id]").forEach((e => { 
+            const t = e.nextElementSibling, n = t?.querySelector(".kth-menu-panel__content"); 
+            if (!(e instanceof HTMLElement)) return; 
+            if (!(t instanceof HTMLDialogElement)) return; 
+            const o = e.dataset.id; let i; 
+            function l() {
+                /*
+                if (n instanceof HTMLElement) {
+                    if (!i) {
+                        i = fetch("/cm/1.855134?l=en_GB&contentIdPath=/2.10/2.64986/2.85863/1.855134/&target=" + o).then((e => e.text())) 
+                    } 
+                    i.then((e => { n.innerHTML = e })) 
+                } 
+                */
+            } 
+            e.addEventListener("mouseover", l), e.addEventListener("click", l) 
+        })), 
+        document.querySelectorAll(".kth-mobile-menu__item[data-id]").forEach((e => { 
+            if (!(e instanceof HTMLElement)) return; 
+            const t = e.dataset.id, n = document.querySelector(`.kth-mobile-menu[data-id='${t}']`), o = n?.querySelector(".kth-mobile-menu__cortina-content"); 
+            if (!(n instanceof HTMLDialogElement)) return; 
+            let i; 
+            e.addEventListener("click", (
+                function () { 
+                    /*
+                    if (o instanceof HTMLElement) { 
+                        if (!i) { 
+                            i = fetch("/cm/1.855134?l=en_GB&contentIdPath=/2.10/2.64986/2.85863/1.855134/&target=" + t).then((e => e.text())) 
+                        } 
+                        i.then((e => { o.innerHTML = e })) 
+                    } 
+                    */
+                }
+            )) 
+        })),
+        setNavigationPanels(document.querySelector(".kth-header"), 
+        document.querySelectorAll(".kth-mega-menu .kth-menu-item")), 
+        window.addEventListener("load", (
+            function () { 
+                initModal(
+                    document.querySelector(".kth-menu-item.collapsable"), 
+                    document.querySelector(".kth-mobile-menu")), 
+                    initModals(
+                        document.querySelectorAll(".kth-mobile-menu__item"), 
+                        document.querySelector(".kth-mobile-menu")
+                    ) 
+            }
+        ));
+    </script>
+    <script>"use strict"; const DEFAULT_OPTIONS = { threshold: 32, className: "collapsed" }; function toggleClass(s, { threshold: e, className: l }) { window.scrollY > e ? s?.classList.add(l) : s?.classList.remove(l) } function setClass(s, e = DEFAULT_OPTIONS) { toggleClass(s, e), window.addEventListener("scroll", (() => { toggleClass(s, e) })) } setClass(document.querySelector(".kth-header"));</script>
+
+</header>

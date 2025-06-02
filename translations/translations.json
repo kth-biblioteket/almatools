@@ -6,7 +6,7 @@
         "systemheader": "KTH Library Online Payment",
         "invalidtoken": "None or invalid token",
         "back_to_fees" : "Back to fees",
-        "username" : "User name:",
+        "username" : "Username:",
         "fullname" : "Name:",
         "fees" : "Fees:",
         "type": "Type",
