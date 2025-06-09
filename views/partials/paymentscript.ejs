@@ -1,7 +1,12 @@
 <script>
     function switchLanguage() {
         const url = new URL(window.location.href);
-        const currentLang = url.searchParams.get("lang");
+        let currentLang = url.searchParams.get("lang");
+
+        // Treat no lang as 'sv' (default language)
+        if (!currentLang) {
+            currentLang = 'sv';
+        }
 
         // Toggle between 'en' and 'sv'
         const newLang = currentLang === "sv" ? "en" : "sv";
