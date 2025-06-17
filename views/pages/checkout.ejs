@@ -86,6 +86,7 @@
     <% if(almapaymentdata.totalamount> 0 ) { %>
         <script>
             const checkpaymentUrl = '<%= config.checkpaymentUrl %>';
+            const language = '<%=almapaymentdata.language%>';
             document.addEventListener('DOMContentLoaded', function () {
                 const urlParams = new URLSearchParams(window.location.search);
                 const paymentId = urlParams.get('paymentId');
@@ -94,7 +95,7 @@
                         checkoutKey: '<%=almapaymentdata.nets.checkoutkey%>',
                         paymentId: paymentId,
                         containerId: "checkout-container-div",
-                        language: "sv-SE",
+                        language: language === "sv" ? "sv-SE":"en-GB",
                         theme: {
                             buttonRadius: "5px"
                         }
