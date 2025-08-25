@@ -245,26 +245,54 @@ appRoutes.get("/payment", async function (req, res, next) {
         console.log(err)
     }
 
-    if (decodedtoken != 0) {
-        almapaymentdata.decodedtoken = decodedtoken;
+    if (!decodedtoken) {
+  almapaymentdata.status = "error";
+  almapaymentdata.message = "None or not a valid token";
+} else {
+  almapaymentdata.decodedtoken = decodedtoken;
 
-        //Hämta fees från Alma
-        alma_apiurl = process.env.ALMA_API_ENDPOINT + 'users/' + decodedtoken.userName + '/fees?user_id_type=all_unique&status=ACTIVE&apikey=' + process.env.ALMAAPIKEY;
-        console.log(alma_apiurl)
-        try {
-            const almaresponse = await axios.get(alma_apiurl)
-            almapaymentdata.status = "success";
-            almapaymentdata.message = "ok";
-            almapaymentdata.alma = almaresponse.data;
-        } catch (err) {
-            console.log(err.message);
-            almapaymentdata.status = "error";
-            almapaymentdata.message = err.message;
-        }
-    } else {
-        almapaymentdata.status = "error";
-        almapaymentdata.message = "None or not a valid token";
+  const almaApiUrl = `${process.env.ALMA_API_ENDPOINT}users/${decodedtoken.userName}/fees?user_id_type=all_unique&status=ACTIVE&apikey=${process.env.ALMAAPIKEY}`;
+
+  try {
+    const almaResponse = await axios.get(almaApiUrl);
+    let feesData = almaResponse.data;
+
+    // Om språket är svenska → hämta översättningar
+    if (language === "sv") {
+      try {
+        const feeTypesResponse = await axios.get(
+          `${process.env.ALMA_API_ENDPOINT}conf/code-tables/HFrUserFinesFees.fineFeeType?lang=sv&format=json&apikey=${process.env.ALMAAPIKEY}`
+        );
+
+        // Bygg uppslagskarta
+        const translationMap = feeTypesResponse.data.row.reduce((map, entry) => {
+          map[entry.code] = entry.description;
+          return map;
+        }, {});
+
+        // Uppdatera fees med svenska benämningar
+        feesData.fee = feesData.fee.map(fee => ({
+          ...fee,
+          type: {
+            ...fee.type,
+            desc: translationMap[fee.type.value] || fee.type.desc
+          }
+        }));
+      } catch (err) {
+        console.warn("Kunde inte hämta svenska FeeTypes, använder engelska:", err.message);
+      }
     }
+
+    almapaymentdata.status = "success";
+    almapaymentdata.message = "ok";
+    almapaymentdata.alma = feesData;
+
+  } catch (err) {
+    console.error("Fel vid hämtning av fees:", err.message);
+    almapaymentdata.status = "error";
+    almapaymentdata.message = err.message;
+  }
+}
 
     res.render('pages/payment', { "config": config, "almapaymentdata": almapaymentdata });
 })
