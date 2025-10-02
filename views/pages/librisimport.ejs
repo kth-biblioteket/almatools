@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head') %>
+<style>
+    
+.kth-alert {
+    position: relative;       /* För att absolut-positionera knappen */
+}
+.kth-icon-button.close {
+    position: absolute;       /* Placera knappen ovanpå alerten */
+    top: 0.25rem;
+    right: 0.25rem;
+    cursor: pointer;
+}
+.record-cell {
+  min-width: 250px;
+  max-width: 400px;        /* Begränsa kolumnbredd */
+  word-wrap: break-word;   /* Bryt långa ord */
+}
+
+.record-preview {
+  white-space: pre-wrap;   /* Behåll radbrytningar */
+  word-break: break-all; /* Bryt långa ord */
+  overflow: hidden;
+}
+
+.record-full {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  word-break: break-all; /* Bryt långa ord */
+  margin-top: 0.5rem;
+}
+.d-none {
+  display: none !important;
+}
+
+table td {
+    font-size: 12px;
+}
+
+table td, table th {
+    white-space: normal;       /* tillåt radbrytning */
+    word-break: normal;        /* bryt inte mitt i ord */
+    overflow-wrap: break-word; /* bryt vid mellanslag om raden blir för lång */
+    padding: .35rem .5rem;
+    border: 1px solid #ddd;
+    vertical-align: top;
+}
+
+/* Lite enklare table styling så det ser okej ut */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto; 
+}
+
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.table-responsive table {
+  width: 100%;
+  border-collapse: collapse;
+}
+</style>
+    <body>
+        <%- include('../partials/header') %>
+
+            <div class="kth-main-content">
+
+                <h1>Misslyckade Libris-poster</h1>
+                <div id="alertPlaceholder"></div>
+                <div class="table-responsive"></div>
+                    <table border="1" cellpadding="5">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>LibrisId</th>
+                                <th>Typ</th>
+                                <th>Record</th>
+                                <th>Fel</th>
+                                <th>Försök</th>
+                                <th>Mail skickat</th>
+                                <th>Senaste försök</th>
+                                <th>Status</th>
+                                <th>Åtgärd</th>
+                            </tr>
+                        </thead>
+                    <tbody id="recordsBody">
+                            <% records.forEach(r=> { %>
+                                <tr>
+                                    <td>
+                                        <%= r.id %>
+                                    </td>
+                                    <td>
+                                        <%= r.libris_id %>
+                                    </td>
+                                    <td>
+                                        <%= r.record_type %>
+                                    </td>
+                                    <td class="record-cell">
+                                        <div class="record-preview">
+                                            <%= r.record.substring(0,200) %>...
+                                        </div>
+                                        <button type="button" class="btn btn-link p-0 toggle-record">Visa mer</button>
+                                        <div class="record-full d-none"><%= r.record %></div>
+                                    </td>
+                                    <td>
+                                        <%= r.error_message %>
+                                    </td>
+                                    <td>
+                                        <%= r.attempts %>
+                                    </td>
+                                    <td>
+                                        <%= r.mail_sent ? '✅' : '❌' %>
+                                    </td>
+                                    <td>
+                                        <%= r.last_attempt %>
+                                    </td>
+                                    <td>
+                                        <%= r.status %>
+                                    </td>
+                                    <td>
+                                        <% if (r.attempts >= 5 && r.status === 'failed') { %>
+                                            <button class="retry-btn" data-id="<%= r.id %>">🔄</button>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    </body>
+    <script>
+        /** Konfig */
+        const REFRESH_MS = 5000; // auto-refresh intervall (ms) — ändra vid behov
+        /** Hjälp: escape för text innan vi sätter innerHTML */
+        function escapeHtml(str = '') {
+            return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+        }
+
+        function alertMessage(message, type, placeholder, remove=true, removaltime=5000 ) {
+            var alertPlaceholder = document.getElementById(placeholder)
+            var wrapper = document.createElement('div')
+            wrapper.innerHTML = 
+            '<div class="kth-alert ' + type + ' alert-dismissible fade show" role="alert">' 
+                + message + 
+                '<button class="kth-icon-button close"><span class="kth-visually-hidden">{"close"}</span></button>' + 
+            '</div>'
+            alertPlaceholder.append(wrapper)
+            const closeBtn = wrapper.querySelector('.kth-icon-button.close');
+            const alertDiv = wrapper.querySelector('.kth-alert');
+
+            closeBtn.addEventListener('click', () => {
+                $(alertDiv).fadeTo(500, 0).slideUp(500, function () {
+                    $(alertDiv).parent().remove();
+                });
+            });
+            if(remove) {
+                setTimeout(function () {
+                    $(alertDiv).fadeTo(500, 0).slideUp(500, function(){
+                        $(alertDiv).remove(); 
+                    });
+                }, removaltime);
+            }
+        }
+
+        /** Ladda poster från server (förväntar JSON-array från /failedlibrisrecords/json) */
+        async function loadRecords() {
+            try {
+                url = '/almatools/failedlibrisrecords/json';
+                const res = await fetch(url, { cache: 'no-cache' });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+
+                const table = document.querySelector('table');
+                if (!table) return;
+
+                // Se till att tbody finns
+                let tbody = table.querySelector('tbody');
+                if (!tbody) {
+                    tbody = document.createElement('tbody');
+                    tbody.id = 'recordsBody';
+                    table.appendChild(tbody);
+                }
+
+                // töm tbody
+                tbody.innerHTML = '';
+
+                // fyll med rader (escapeHtml för säkert vis)
+                data.forEach(r => {
+                    const id = escapeHtml(r.id);
+                    const librisId = escapeHtml(r.libris_id);
+                    const recordType = escapeHtml(r.record_type);
+                    const attempts = escapeHtml(r.attempts);
+                    const mailSent = r.mail_sent ? '✅' : '❌';
+                    const lastAttempt = escapeHtml(r.last_attempt || '');
+                    //const status = escapeHtml(r.status || '');
+                    const status = r.status=='success' ? '✅ Omförsök lyckat' : '❌';
+                    const errorMessage = escapeHtml(r.error_message || '');
+                    const recordPreview = escapeHtml((r.record || '').substring(0,200));
+                    const recordFull = escapeHtml(r.record || '');
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${id}</td>
+                        <td>${librisId}</td>
+                        <td>${recordType}</td>
+                        <td class="record-cell">
+                            <div class="record-preview">${recordPreview}...</div>
+                            <button type="button" class="btn btn-link p-0 toggle-record">Visa mer</button>
+                            <div class="record-full d-none">${recordFull}</div>
+                        </td>
+                        <td>${errorMessage}</td>
+                        <td>${attempts}</td>
+                        <td>${mailSent}</td>
+                        <td>${lastAttempt}</td>
+                        <td>${status}</td>
+                        <td>${Number(attempts) >= 5 && r.status === 'failed' ? `<button class="retry-btn" data-id="${id}">🔄</button>` : ''}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+            } catch (err) {
+                console.error('Fel vid laddning av poster:', err);
+                // Visa ett icke-påträngande varningsmeddelande
+                alertMessage('Kunde inte ladda poster: ' + (err.message || err), 'warning', 'alertPlaceholder', false);
+            }
+        }
+
+        /** Delegated event handling (sitter kvar oavsett om tbody byts ut) */
+        function bindDelegatedHandlers() {
+            const table = document.querySelector('table');
+            if (!table) return;
+
+            // Delegation på tbody (skapar listener en gång)
+            table.addEventListener('click', async (e) => {
+                // Retry-knapp
+                const retryBtn = e.target.closest('.retry-btn');
+                if (retryBtn) {
+                    const id = retryBtn.dataset.id;
+                    // disable knapp medan request pågår
+                    retryBtn.disabled = true;
+                    try {
+                        const res = await fetch(`retrylibrisimport/${encodeURIComponent(id)}`, { method: 'POST' });
+                        const data = await res.json();
+
+                        if (data && data.success) {
+                            alertMessage(data.message || 'Omförsök triggat', 'success', 'alertPlaceholder', true);
+                        } else {
+                            alertMessage((data && data.message) || 'Omförsök misslyckades', 'warning', 'alertPlaceholder', false);
+                        }
+                    } catch (err) {
+                        alertMessage('Tekniskt fel vid omförsök: ' + (err.message || err), 'warning', 'alertPlaceholder', false);
+                    } finally {
+                        retryBtn.disabled = false;
+                        // Ladda om listan efter försöket
+                        loadRecords();
+                    }
+                    return;
+                }
+
+                // Toggle "Visa mer"
+                const toggleBtn = e.target.closest('.toggle-record');
+                if (toggleBtn) {
+                    const cell = toggleBtn.closest('.record-cell');
+                    if (!cell) return;
+                    const preview = cell.querySelector('.record-preview');
+                    const full = cell.querySelector('.record-full');
+                    preview.classList.toggle('d-none');
+                    full.classList.toggle('d-none');
+                    toggleBtn.textContent = full.classList.contains('d-none') ? 'Visa mer' : 'Visa mindre';
+                    return;
+                }
+            });
+        }
+        /** Init när DOM är redo */
+        document.addEventListener('DOMContentLoaded', () => {
+            bindDelegatedHandlers();
+            loadRecords();
+            setInterval(loadRecords, REFRESH_MS);
+        });
+    </script>
+
+</html>

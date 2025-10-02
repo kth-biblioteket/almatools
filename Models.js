@@ -60,8 +60,40 @@ const readNewbooks = (req) => {
     })
 };
 
+const readFailedLibrisImports = (req) => {
+    let sql = `SELECT * FROM libris_import_failed_records`;
+  
+    return new Promise(function (resolve, reject) {    
+        database.db.query(database.mysql.format(sql),(err, result) => {
+            if(err) {
+              console.error('Error executing query:', err);
+              reject(err.message)
+            }
+            const successMessage = "Success"
+            resolve(result);
+        });
+    })
+};
+
+const retryFailedLibrisImports = (req) => {
+    const id = req.params.id;
+    let sql = `UPDATE libris_import_failed_records SET attempts = attempts - 1, last_attempt = NOW(), status= "failed" WHERE id = ?`;
+
+    return new Promise(function (resolve, reject) {  
+        database.db.query(database.mysql.format(sql,[id]),async (err, result) => {
+            if(err || result.length === 0) {
+              console.error('Error executing query:', err);
+              reject(err.message)
+            }
+            resolve(`✅ Omförsök kommer att utföras: ${id}`);
+        });
+    })
+};
+
 
 
 module.exports = {
-    readNewbooks
+    readNewbooks,
+    readFailedLibrisImports,
+    retryFailedLibrisImports
 };

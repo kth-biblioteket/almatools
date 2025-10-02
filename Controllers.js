@@ -206,6 +206,37 @@ async function getNewbooksCarousel(req, res) {
     }
 }
 
+async function readFailedLibrisImports(req, res) {
+    try {
+        let results = await Models.readFailedLibrisImports(req)
+        res.render('pages/librisimport', { user: req.session.user ? req.session.user.decodedIdToken : null, records: results });
+    } catch (err) {
+        res.send("error: " + err)
+    }
+}
+
+async function retryFailedLibrisImports(req, res) {
+    try {
+        let results = await Models.retryFailedLibrisImports(req)
+        res.json({ success: true, message: results });
+        //res.render('pages/librisimport', { user: req.session.user ? req.session.user.decodedIdToken : null, records: results });
+        console.log(results);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ success: false, message: err });
+        //res.send(err)
+    }
+}
+
+async function getFailedLibrisRecordsJson(req, res) {
+    try {
+        let results = await Models.readFailedLibrisImports(req)
+        res.json(results);
+    } catch (err) {
+        res.status(500).json({ message: err });
+    }
+}
+
 module.exports = {
     login,
     logout,
@@ -213,5 +244,8 @@ module.exports = {
     getNewbooksAdmin,
     almalogin,
     getNewbooksList,
-    getNewbooksCarousel
+    getNewbooksCarousel,
+    readFailedLibrisImports,
+    retryFailedLibrisImports,
+    getFailedLibrisRecordsJson
 };

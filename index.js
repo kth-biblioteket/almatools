@@ -90,6 +90,15 @@ appRoutes.get("/index", (req, res) => {
     if (!req.session.user) {
         return res.redirect(process.env.APP_PATH + '/login');
     }
+    console.log("index: ", req.session.user);
+    if (process.env.NODE_ENV === 'development') {
+        req.session.user = {
+            name: 'Test User',
+            memberOf: ['testgroup','pa.anstallda.T.TR'], // Lägg till behörigheter som behövs
+            email: 'test@example.com'
+        };
+        res.render('pages/almatools', { user: req.session.user });
+    }
     res.render('pages/almatools', { user: req.session.user.decodedIdToken });
 });
 
@@ -103,8 +112,19 @@ appRoutes.get("/userprofile", (req, res) => {
 
 //Login mot OIDC
 appRoutes.get(`/login`, (req, res) => {
+    
     const state = crypto.randomBytes(16).toString('hex');
     req.session.state = state;
+    if (process.env.NODE_ENV === 'development') {
+        
+        req.session.user = {
+            name: 'Test User',
+            memberOf: ['testgroup','pa.anstallda.T.TR'], // Lägg till behörigheter som behövs
+            email: 'test@example.com'
+        };
+        return res.redirect('/'); // Skicka vidare till appen
+    }
+
 
     const { action } = req.query;
   
@@ -454,6 +474,16 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
     }
 
 })
+
+// Librisimport - sida för att omförsöka misslyckade poster
+appRoutes.get("/librisimport",Controllers.readFailedLibrisImports)
+
+// Trigga omförsök på en post
+appRoutes.post("/retrylibrisimport/:id",Controllers.retryFailedLibrisImports)
+
+// Hämtar alla misslyckade records i JSON-format
+appRoutes.get('/failedlibrisrecords/json', Controllers.getFailedLibrisRecordsJson);
+
 app.use(process.env.APP_PATH, appRoutes);
 
 const server = app.listen(process.env.PORT || 3002, function () {
