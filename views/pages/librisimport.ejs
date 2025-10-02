@@ -121,7 +121,7 @@ table {
                                         <%= r.status %>
                                     </td>
                                     <td>
-                                        <% if (r.attempts >= 5 && r.status === 'failed') { %>
+                                        <% if (r.attempts >= 5 && r.status === 'max_attempts') { %>
                                             <button class="retry-btn" data-id="<%= r.id %>">🔄</button>
                                         <% } %>
                                     </td>
@@ -222,7 +222,7 @@ table {
                         <td>${mailSent}</td>
                         <td>${lastAttempt}</td>
                         <td>${status}</td>
-                        <td>${Number(attempts) >= 5 && r.status === 'failed' ? `<button class="retry-btn" data-id="${id}">🔄</button>` : ''}</td>
+                        <td>${Number(attempts) >= 5 && r.status === 'max_attempts' ? `<button class="retry-btn" data-id="${id}">🔄</button>` : ''}</td>
                     `;
                     tbody.appendChild(tr);
                 });
