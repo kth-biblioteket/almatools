@@ -68,7 +68,7 @@ table {
 
             <div class="kth-main-content">
 
-                <h1>Misslyckade Libris-poster</h1>
+                <h1>Importerade Libris-poster</h1>
                 <div id="alertPlaceholder"></div>
                 <div class="table-responsive"></div>
                     <table border="1" cellpadding="5">
@@ -78,10 +78,10 @@ table {
                                 <th>LibrisId</th>
                                 <th>Typ</th>
                                 <th>Record</th>
-                                <th>Fel</th>
-                                <th>Försök</th>
-                                <th>Mail skickat</th>
-                                <th>Senaste försök</th>
+                                <th>Meddelande</th>
+                                <th>Omförsök</th>
+                                <th>Mail om fel skickat</th>
+                                <th>Tidpunkt</th>
                                 <th>Status</th>
                                 <th>Åtgärd</th>
                             </tr>
@@ -106,7 +106,7 @@ table {
                                         <div class="record-full d-none"><%= r.record %></div>
                                     </td>
                                     <td>
-                                        <%= r.error_message %>
+                                        <%= r.message %>
                                     </td>
                                     <td>
                                         <%= r.attempts %>
@@ -115,10 +115,10 @@ table {
                                         <%= r.mail_sent ? '✅' : '❌' %>
                                     </td>
                                     <td>
-                                        <%= r.last_attempt %>
+                                        <%= new Date(r.last_attempt).toLocaleString('sv-SE') %>
                                     </td>
                                     <td>
-                                        <%= r.status %>
+                                        <%= r.status=='success' ? '✅' : '❌'; %>
                                     </td>
                                     <td>
                                         <% if (r.attempts >= 5 && r.status === 'max_attempts') { %>
@@ -134,7 +134,7 @@ table {
     </body>
     <script>
         /** Konfig */
-        const REFRESH_MS = 5000; // auto-refresh intervall (ms) — ändra vid behov
+        const REFRESH_MS = <%- JSON.stringify(refreshMs) %>;
         /** Hjälp: escape för text innan vi sätter innerHTML */
         function escapeHtml(str = '') {
             return String(str)
@@ -193,17 +193,17 @@ table {
                 // töm tbody
                 tbody.innerHTML = '';
 
-                // fyll med rader (escapeHtml för säkert vis)
+                // fyll med rader (escapeHtml)
                 data.forEach(r => {
                     const id = escapeHtml(r.id);
                     const librisId = escapeHtml(r.libris_id);
                     const recordType = escapeHtml(r.record_type);
                     const attempts = escapeHtml(r.attempts);
                     const mailSent = r.mail_sent ? '✅' : '❌';
-                    const lastAttempt = escapeHtml(r.last_attempt || '');
+                    const lastAttempt = escapeHtml(new Date(r.last_attempt).toLocaleString('sv-SE') || '');
                     //const status = escapeHtml(r.status || '');
-                    const status = r.status=='success' ? '✅ Omförsök lyckat' : '❌';
-                    const errorMessage = escapeHtml(r.error_message || '');
+                    const status = r.status=='success' ? '✅' : '❌';
+                    const message = escapeHtml(r.message || '');
                     const recordPreview = escapeHtml((r.record || '').substring(0,200));
                     const recordFull = escapeHtml(r.record || '');
 
@@ -217,7 +217,7 @@ table {
                             <button type="button" class="btn btn-link p-0 toggle-record">Visa mer</button>
                             <div class="record-full d-none">${recordFull}</div>
                         </td>
-                        <td>${errorMessage}</td>
+                        <td>${message}</td>
                         <td>${attempts}</td>
                         <td>${mailSent}</td>
                         <td>${lastAttempt}</td>
@@ -283,7 +283,7 @@ table {
         /** Init när DOM är redo */
         document.addEventListener('DOMContentLoaded', () => {
             bindDelegatedHandlers();
-            loadRecords();
+            //loadRecords();
             setInterval(loadRecords, REFRESH_MS);
         });
     </script>

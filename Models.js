@@ -61,7 +61,7 @@ const readNewbooks = (req) => {
 };
 
 const readFailedLibrisImports = (req) => {
-    let sql = `SELECT * FROM libris_import_failed_records`;
+    let sql = `SELECT * FROM libris_import_records`;
   
     return new Promise(function (resolve, reject) {    
         database.db.query(database.mysql.format(sql),(err, result) => {
@@ -77,7 +77,7 @@ const readFailedLibrisImports = (req) => {
 
 const retryFailedLibrisImports = (req) => {
     const id = req.params.id;
-    let sql = `UPDATE libris_import_failed_records SET attempts = attempts - 1, last_attempt = NOW(), status= "failed" WHERE id = ?`;
+    let sql = `UPDATE libris_import_records SET attempts = attempts - 1, last_attempt = NOW(), status= "failed" WHERE id = ?`;
 
     return new Promise(function (resolve, reject) {  
         database.db.query(database.mysql.format(sql,[id]),async (err, result) => {

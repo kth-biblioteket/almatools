@@ -209,7 +209,7 @@ async function getNewbooksCarousel(req, res) {
 async function readFailedLibrisImports(req, res) {
     try {
         let results = await Models.readFailedLibrisImports(req)
-        res.render('pages/librisimport', { user: req.session.user ? req.session.user.decodedIdToken : null, records: results });
+        res.render('pages/librisimport', { user: req.session.user ? req.session.user.decodedIdToken : null, records: results, refreshMs: process.env.LIBRISIMPORTREFRESHMS || "8000" });
     } catch (err) {
         res.send("error: " + err)
     }
@@ -219,7 +219,6 @@ async function retryFailedLibrisImports(req, res) {
     try {
         let results = await Models.retryFailedLibrisImports(req)
         res.json({ success: true, message: results });
-        //res.render('pages/librisimport', { user: req.session.user ? req.session.user.decodedIdToken : null, records: results });
         console.log(results);
     } catch (err) {
         console.log(err);
