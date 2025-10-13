@@ -62,6 +62,16 @@ table {
   width: 100%;
   border-collapse: collapse;
 }
+
+.json-scroll {
+    max-height: 200px;   /* begränsad höjd */
+    overflow: auto;      /* scroll när innehållet är större */
+    white-space: pre;    /* behåller radbrytningar */
+    font-family: monospace;
+    background: #f5f5f5;
+    padding: 8px;
+    border-radius: 4px;
+}
 </style>
     <body>
         <%- include('../partials/header') %>
@@ -99,11 +109,7 @@ table {
                                         <%= r.record_type %>
                                     </td>
                                     <td class="record-cell">
-                                        <div class="record-preview">
-                                            <%= r.record.substring(0,200) %>...
-                                        </div>
-                                        <button type="button" class="btn btn-link p-0 toggle-record">Visa mer</button>
-                                        <div class="record-full d-none"><%= r.record %></div>
+                                        <div class="record-full json-scroll"><pre><%= JSON.stringify(JSON.parse(r.record), null, 2) %></pre></div>
                                     </td>
                                     <td>
                                         <%= r.message %>
@@ -205,7 +211,7 @@ table {
                     const status = r.status=='success' ? '✅' : '❌';
                     const message = escapeHtml(r.message || '');
                     const recordPreview = escapeHtml((r.record || '').substring(0,200));
-                    const recordFull = escapeHtml(r.record || '');
+                    const recordFull = escapeHtml(JSON.stringify(JSON.parse(r.record), null, 2) || '');
 
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
@@ -213,9 +219,7 @@ table {
                         <td>${librisId}</td>
                         <td>${recordType}</td>
                         <td class="record-cell">
-                            <div class="record-preview">${recordPreview}...</div>
-                            <button type="button" class="btn btn-link p-0 toggle-record">Visa mer</button>
-                            <div class="record-full d-none">${recordFull}</div>
+                            <div class="record-full json-scroll"><pre>${recordFull}</pre></div>
                         </td>
                         <td>${message}</td>
                         <td>${attempts}</td>
