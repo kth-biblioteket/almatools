@@ -7,6 +7,8 @@ const fs = require("fs");
 const path = require('path');
 const axios = require('axios')
 const jwt = require("jsonwebtoken");
+const marc4js = require("marc4js");
+const Record = require("marc-record-js");
 
 async function login(req, res) {
     try {
@@ -208,8 +210,25 @@ async function getNewbooksCarousel(req, res) {
 
 async function readFailedLibrisImports(req, res) {
     try {
-        let results = await Models.readFailedLibrisImports(req)
-        res.render('pages/librisimport', { user: req.session.user ? req.session.user.decodedIdToken : null, records: results, refreshMs: process.env.LIBRISIMPORTREFRESHMS || "8000" });
+        const results = await Models.readFailedLibrisImports(req)
+        
+        // Lägg till marcText för varje post
+        results.forEach(row => {
+            if (row.record) {
+                const recordObj = JSON.parse(row.record);
+                row.marcTable = jsonToMarcTable(recordObj);
+                row.marcText = jsonToMarc21(recordObj);
+            } else {
+                row.marcText = '';
+                row.marcTable = [];
+            }
+        });
+
+        res.render('pages/librisimport', { 
+            user: req.session.user ? req.session.user.decodedIdToken : null, 
+            records: results, 
+            refreshMs: process.env.LIBRISIMPORTREFRESHMS || "8000" 
+        });
     } catch (err) {
         res.send("error: " + err)
     }
@@ -219,21 +238,109 @@ async function retryFailedLibrisImports(req, res) {
     try {
         let results = await Models.retryFailedLibrisImports(req)
         res.json({ success: true, message: results });
-        console.log(results);
     } catch (err) {
         console.log(err);
         res.status(500).json({ success: false, message: err });
-        //res.send(err)
     }
 }
 
 async function getFailedLibrisRecordsJson(req, res) {
     try {
         let results = await Models.readFailedLibrisImports(req)
+
+        // Lägg till marcText för varje post
+        results.forEach(row => {
+            if (row.record) {
+                const recordObj = JSON.parse(row.record);
+                row.marcTable = jsonToMarcTable(recordObj);
+                row.marcText = jsonToMarc21(recordObj);
+            } else {
+                row.marcText = '';
+                row.marcTable = [];
+            }
+        });
+
         res.json(results);
     } catch (err) {
         res.status(500).json({ message: err });
     }
+}
+
+function jsonToMarc21(record) {
+    let lines = [];
+
+    if (record.leader) lines.push(`=LDR  ${record.leader}`);
+
+    if (record.controlfield && Array.isArray(record.controlfield)) {
+        record.controlfield.forEach(cf => {
+            lines.push(`=${cf.$.tag}  ${cf._}`);
+        });
+    }
+
+    if (record.datafield && Array.isArray(record.datafield)) {
+        record.datafield.forEach(df => {
+            const tag = df.$.tag;
+            const ind1 = df.$.ind1 || ' ';
+            const ind2 = df.$.ind2 || ' ';
+
+            if (Array.isArray(df.subfield)) {
+                const subfields = df.subfield.map(sf => `#${sf.$.code} ${sf._}`).join(' ');
+                lines.push(`=${tag}  ${ind1}${ind2} ${subfields}`);
+            } else if (df.subfield) {
+                const sf = df.subfield;
+                lines.push(`=${tag}  ${ind1}${ind2} $${df.subfield.$.code} ${df.subfield._}`);
+            }
+        });
+    }
+
+    return lines.join('\n');
+}
+
+function jsonToMarcTable(record) {
+    const rows = [];
+
+    // Leader motsvarar "000"
+    if (record.leader) {
+        rows.push({
+            tag: '000',
+            i1: '',
+            i2: '',
+            data: record.leader.trim()
+        });
+    }
+
+    // Controlfields
+    if (record.controlfield && Array.isArray(record.controlfield)) {
+        record.controlfield.forEach(cf => {
+            rows.push({
+                tag: cf.$.tag,
+                i1: '',
+                i2: '',
+                data: cf._.trim()
+            });
+        });
+    }
+
+    // Datafields
+    if (record.datafield && Array.isArray(record.datafield)) {
+        record.datafield.forEach(df => {
+            const tag = df.$.tag;
+            const i1 = df.$.ind1 || '';
+            const i2 = df.$.ind2 || '';
+
+            // Subfields som sträng "#a text#b text"
+            let data = '';
+            if (Array.isArray(df.subfield)) {
+                data = df.subfield.map(sf => `#${sf.$.code} ${sf._}`).join('');
+            } else if (df.subfield) {
+                data = `#${df.subfield.$.code} ${df.subfield._}`;
+            }
+
+            rows.push({ tag, i1, i2, data });
+        });
+    }
+
+    return rows;
 }
 
 module.exports = {

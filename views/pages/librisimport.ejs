@@ -14,8 +14,7 @@
 }
 .record-cell {
   min-width: 250px;
-  max-width: 400px;        /* Begränsa kolumnbredd */
-  word-wrap: break-word;   /* Bryt långa ord */
+ word-wrap: break-word;   /* Bryt långa ord */
 }
 
 .record-preview {
@@ -72,6 +71,25 @@ table {
     padding: 8px;
     border-radius: 4px;
 }
+
+.json-scroll pre {
+    white-space: normal;
+
+.marc-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+.marc-table th, .marc-table td {
+  border: 1px solid #ccc;
+  padding: 2px 6px;
+  text-align: left;
+  vertical-align: top;
+}
+.marc-table th {
+  background-color: #f2f2f2;
+}
 </style>
     <body>
         <%- include('../partials/header') %>
@@ -88,6 +106,7 @@ table {
                                 <th>LibrisId</th>
                                 <th>Typ</th>
                                 <th>Record</th>
+                                <th>RecordMarc</th>
                                 <th>Meddelande</th>
                                 <th>Omförsök</th>
                                 <th>Mail om fel skickat</th>
@@ -108,8 +127,35 @@ table {
                                     <td>
                                         <%= r.record_type %>
                                     </td>
+                                    
                                     <td class="record-cell">
-                                        <div class="record-full json-scroll"><pre><%= JSON.stringify(JSON.parse(r.record), null, 2) %></pre></div>
+                                        <div class="record-full json-scroll"><pre><%= r.record %></pre></div>
+                                    </td>
+                                    <td class="record-cell">
+                                        <div class="record-full json-scroll"><% if (r.marcTable && r.marcTable.length > 0) { %><table class="marc-table" border="1" cellpadding="3">
+                                                <thead>
+                                                <tr>
+                                                    <th>Tag</th>
+                                                    <th>I1</th>
+                                                    <th>I2</th>
+                                                    <th>Subfield data</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <% r.marcTable.forEach(row => { %>
+                                                    <tr>
+                                                    <td><%= row.tag %></td>
+                                                    <td><%= row.i1 %></td>
+                                                    <td><%= row.i2 %></td>
+                                                    <td><%= row.data %></td>
+                                                    </tr>
+                                                <% }) %>
+                                                </tbody>
+                                            </table>
+                                            <% } else { %>
+                                            <em>Inget MARC-data</em>
+                                            <% } %>
+                                        </div>
                                     </td>
                                     <td>
                                         <%= r.message %>
@@ -207,11 +253,11 @@ table {
                     const attempts = escapeHtml(r.attempts);
                     const mailSent = r.mail_sent ? '✅' : '❌';
                     const lastAttempt = escapeHtml(new Date(r.last_attempt).toLocaleString('sv-SE') || '');
-                    //const status = escapeHtml(r.status || '');
                     const status = r.status=='success' ? '✅' : '❌';
                     const message = escapeHtml(r.message || '');
                     const recordPreview = escapeHtml((r.record || '').substring(0,200));
-                    const recordFull = escapeHtml(JSON.stringify(JSON.parse(r.record), null, 2) || '');
+                    const recordFull = escapeHtml(r.record || '');
+                    const recordMarc = escapeHtml(r.marcTable || '');
 
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
@@ -220,6 +266,29 @@ table {
                         <td>${recordType}</td>
                         <td class="record-cell">
                             <div class="record-full json-scroll"><pre>${recordFull}</pre></div>
+                        </td>
+                        <td class="record-cell">
+                            <div class="record-full json-scroll"><table class="marc-table" border="1" cellpadding="3">
+                                    <thead>
+                                    <tr>
+                                        <th>Tag</th>
+                                        <th>I1</th>
+                                        <th>I2</th>
+                                        <th>Subfield data</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${r.marcTable.map(row => `
+                                            <tr>
+                                                <td>${row.tag}</td>
+                                                <td>${row.i1}</td>
+                                                <td>${row.i2}</td>
+                                                <td>${row.data}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
                         </td>
                         <td>${message}</td>
                         <td>${attempts}</td>
@@ -233,7 +302,6 @@ table {
 
             } catch (err) {
                 console.error('Fel vid laddning av poster:', err);
-                // Visa ett icke-påträngande varningsmeddelande
                 alertMessage('Kunde inte ladda poster: ' + (err.message || err), 'warning', 'alertPlaceholder', false);
             }
         }
@@ -269,25 +337,11 @@ table {
                     }
                     return;
                 }
-
-                // Toggle "Visa mer"
-                const toggleBtn = e.target.closest('.toggle-record');
-                if (toggleBtn) {
-                    const cell = toggleBtn.closest('.record-cell');
-                    if (!cell) return;
-                    const preview = cell.querySelector('.record-preview');
-                    const full = cell.querySelector('.record-full');
-                    preview.classList.toggle('d-none');
-                    full.classList.toggle('d-none');
-                    toggleBtn.textContent = full.classList.contains('d-none') ? 'Visa mer' : 'Visa mindre';
-                    return;
-                }
             });
         }
         /** Init när DOM är redo */
         document.addEventListener('DOMContentLoaded', () => {
             bindDelegatedHandlers();
-            //loadRecords();
             setInterval(loadRecords, REFRESH_MS);
         });
     </script>
