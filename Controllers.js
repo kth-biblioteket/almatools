@@ -266,6 +266,68 @@ async function getFailedLibrisRecordsJson(req, res) {
     }
 }
 
+async function getAllConfig(req, res) {
+    try {
+        const configs = await Models.getAllConfig();
+        res.render('pages/config', { 
+            configs, 
+            user: req.session.user ? req.session.user.decodedIdToken : null
+        });
+    } catch (err) {
+        res.status(500).send("Fel vid hämtning av config: " + err.message);
+    }
+}
+
+// Uppdatera befintliga värden
+
+async function updateConfig(req, res) {
+    try {
+        console.log(req.body);
+        const configs = req.body.configs;
+        const promises = Object.entries(configs).map(async ([key, obj]) => {
+            const value = obj.value;
+            const description = obj.description;
+            await Models.updateConfig(key, value, description);
+        });
+        await Promise.all(promises);
+        res.redirect('/almatools/config');
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Fel vid uppdatering av config: " + err.message);
+    }
+};
+
+// Skapa ny nyckel
+async function createConfig(req, res) {
+    try {
+        const { key, value, description } = req.body;
+        if (!key || !value) {
+            return res.status(400).send("Både key och value krävs");
+        }
+        await Models.createConfig(key, value, description || null);
+        res.redirect('/almatools/config');
+    } catch (err) {
+        if (err.code === 'ER_DUP_ENTRY') {
+            res.status(400).send(`Nyckeln "${req.body.key}" finns redan.`);
+        } else {
+            res.status(500).send("Fel vid skapande av config: " + err.message);
+        }
+    }
+};
+
+// Ta bort nyckel
+async function deleteConfig(req, res) {
+    try {
+        const { key } = req.body;
+        if (!key) return res.status(400).send("Key krävs");
+        await Models.deleteConfig(key);
+        res.redirect('/almatools/config');
+    } catch (err) {
+        res.status(500).send("Fel vid borttagning av config: " + err.message);
+    }
+};
+
+
 function jsonToMarc21(record) {
     let lines = [];
 
@@ -353,5 +415,9 @@ module.exports = {
     getNewbooksCarousel,
     readFailedLibrisImports,
     retryFailedLibrisImports,
-    getFailedLibrisRecordsJson
+    getFailedLibrisRecordsJson,
+    getAllConfig,
+    updateConfig,
+    createConfig,
+    deleteConfig
 };

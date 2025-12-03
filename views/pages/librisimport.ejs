@@ -74,18 +74,22 @@ table {
 
 .json-scroll pre {
     white-space: normal;
+}
 
 .marc-table {
   border-collapse: collapse;
   width: 100%;
   font-family: monospace;
   font-size: 0.9em;
+  table-layout: fixed;
 }
 .marc-table th, .marc-table td {
   border: 1px solid #ccc;
   padding: 2px 6px;
   text-align: left;
   vertical-align: top;
+  word-break: break-word; /* Bryt långa ord */
+  white-space: normal; /* Tillåt radbrytning */
 }
 .marc-table th {
   background-color: #f2f2f2;
@@ -98,14 +102,13 @@ table {
 
                 <h1>Importerade Libris-poster</h1>
                 <div id="alertPlaceholder"></div>
-                <div class="table-responsive"></div>
+                <div class="table-responsive">
                     <table border="1" cellpadding="5">
                         <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>LibrisId</th>
                                 <th>Typ</th>
-                                <th>Record</th>
                                 <th>RecordMarc</th>
                                 <th>Meddelande</th>
                                 <th>Omförsök</th>
@@ -128,11 +131,15 @@ table {
                                         <%= r.record_type %>
                                     </td>
                                     
-                                    <td class="record-cell">
-                                        <div class="record-full json-scroll"><pre><%= r.record %></pre></div>
-                                    </td>
+                          
                                     <td class="record-cell">
                                         <div class="record-full json-scroll"><% if (r.marcTable && r.marcTable.length > 0) { %><table class="marc-table" border="1" cellpadding="3">
+                                                <colgroup>
+                                                    <col style="width: 10%">
+                                                    <col style="width: 8%">
+                                                    <col style="width: 8%">
+                                                    <col style="width: 74%">
+                                                </colgroup>
                                                 <thead>
                                                 <tr>
                                                     <th>Tag</th>
@@ -265,10 +272,13 @@ table {
                         <td>${librisId}</td>
                         <td>${recordType}</td>
                         <td class="record-cell">
-                            <div class="record-full json-scroll"><pre>${recordFull}</pre></div>
-                        </td>
-                        <td class="record-cell">
                             <div class="record-full json-scroll"><table class="marc-table" border="1" cellpadding="3">
+                                    <colgroup>
+                                        <col style="width: 10%">
+                                        <col style="width: 8%">
+                                        <col style="width: 8%">
+                                        <col style="width: 74%">
+                                    </colgroup>
                                     <thead>
                                     <tr>
                                         <th>Tag</th>

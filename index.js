@@ -484,6 +484,18 @@ appRoutes.post("/retrylibrisimport/:id",Controllers.retryFailedLibrisImports)
 // Hämtar alla misslyckade records i JSON-format
 appRoutes.get('/failedlibrisrecords/json', Controllers.getFailedLibrisRecordsJson);
 
+// Visa config-sidan
+appRoutes.get('/config', Controllers.getAllConfig);
+
+// Spara ändringar
+appRoutes.post('/config/update', Controllers.updateConfig);
+
+// Lägg till nyckel
+appRoutes.post('/config/create', Controllers.createConfig);
+
+// Ta bort nyckel
+appRoutes.post('/config/delete', Controllers.deleteConfig);
+
 app.use(process.env.APP_PATH, appRoutes);
 
 const server = app.listen(process.env.PORT || 3002, function () {

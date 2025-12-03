@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head') %>
+<body>
+    <%- include('../partials/header') %>
+        <div class="kth-main-content">
+            <h1>System Configuration</h1>
+            <form action="/almatools/config/update" method="POST">
+                <table>
+                    <tr><th>Key</th><th>Value</th><th>Description</th><th></th></tr>
+                    <% configs.forEach(c => { %>
+                    <tr>
+                        <td><%= c.key %></td>
+                        <td>
+                        <input type="text" name="configs[<%= c.key %>][value]" value="<%= c.value %>">
+                        </td>
+                        <td>
+                        <input type="text" name="configs[<%= c.key %>][description]" value="<%= c.description || '' %>">
+                        </td>
+                        <td>
+                            <form class="delete-form" action="/almatools/config/delete" method="POST">
+                                <input type="hidden" name="key" value="<%= c.key %>">
+                                <button type="submit" onclick="return confirm('Ta bort <%= c.key %>?')">🗑️</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </table>
+                <button type="submit">💾 Spara ändringar</button>
+            </form>
+            <h2>Lägg till ny</h2>
+            <form action="/almatools/config/create" method="POST">
+                <label>Key: <input type="text" name="key" required></label><br>
+                <label>Value: <input type="text" name="value" required></label><br>
+                <label>Description: <input type="text" name="description"></label><br>
+                <button type="submit">➕ Skapa</button>
+            </form>
+         </div>
+</body>
+</html>

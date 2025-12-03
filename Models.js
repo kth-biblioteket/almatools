@@ -1,5 +1,55 @@
 const database = require('./db');
 
+// Hämta alla configvärden
+async function getAllConfig() {
+    return new Promise((resolve, reject) => {
+        database.db.query("SELECT `key`, `value`, `description` FROM system_config", (err, results) => {
+            if (err) return reject(err);
+            resolve(results);
+        });
+    });
+}
+
+/** Uppdatera befintligt värde */
+async function updateConfig(key, value, description = null) {
+    console.log(`Uppdaterar config: ${key} = ${value} (${description})`);
+    return new Promise((resolve, reject) => {
+        database.db.query(
+            `UPDATE system_config SET value = ?, description = ? WHERE \`key\` = ?`,
+            [value, description, key],
+            (err, result) => {
+                if (err) return reject(err);
+                if (result.affectedRows === 0) {
+                    return reject(new Error(`Config key "${key}" finns inte.`));
+                }
+                resolve();
+            }
+        );
+    });
+}
+
+/** Skapa nytt configvärde */
+async function createConfig(key, value, description = null) {
+    return new Promise((resolve, reject) => {
+        database.db.query(
+            `INSERT INTO system_config (\`key\`, \`value\`, \`description\`) VALUES (?, ?, ?)`,
+            [key, value, description],
+            (err) => (err ? reject(err) : resolve())
+        );
+    });
+}
+
+/** Ta bort confignyckel */
+async function deleteConfig(key) {
+    return new Promise((resolve, reject) => {
+        database.db.query(
+            "DELETE FROM system_config WHERE `key` = ?",
+            [key],
+            (err) => (err ? reject(err) : resolve())
+        );
+    });
+}
+
 //Hämta alla böcker från och med aktiveringsdatum
 const readNewbooks = (req) => {
     let showwithnocover = req.query.showwithnocover || 'true'
@@ -93,6 +143,10 @@ const retryFailedLibrisImports = (req) => {
 
 
 module.exports = {
+    getAllConfig,
+    updateConfig,
+    createConfig,
+    deleteConfig,
     readNewbooks,
     readFailedLibrisImports,
     retryFailedLibrisImports
