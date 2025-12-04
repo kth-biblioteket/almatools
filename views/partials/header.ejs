@@ -128,7 +128,8 @@
                 <% if (user) { 
                     // Förbereder listor till kommaseparerade strängar för snyggare visning
                     const affiliationList = Array.isArray(user.affiliation) ? user.affiliation.join(', ') : user.affiliation || 'Ej tillgänglig';
-                    const memberOfList = Array.isArray(user.memberOf) ? user.memberOf.join(', ') : user.memberOf || 'Ej tillgänglig';
+                    const filteredMembers = Array.isArray(user.memberOf) ? user.memberOf.filter(group => typeof group === 'string' && group.includes('pa.anstallda')) : [];
+                    const memberOfList = filteredMembers.length > 0 ? filteredMembers.join(', ') : 'Ej tillgänglig';
                 %>
                     <details class="user-dropdown">
                         <summary class="user-summary">

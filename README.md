@@ -112,25 +112,49 @@ NODE_ENV=development
 10. Starta applikationen med docker compose up -d --build i "local/docker/almatools"
 
 ###### Exempel på OIDC-data
-Decoded ID Token: {
-  aud: 'xxxx',
-  iss: 'https://login.ref.ug.kth.se/adfs',
-  iat: 1728821438,
-  nbf: 1728821438,
-  exp: 1728825038,
-  auth_time: 1728821438,
-  sub: 'xxxx',
-  upn: 'tholind@ref.ug.kth.se',
-  sid: 'xxxxx',
-  unique_name: [ 'Thomas Lind', 'REF\\tholind' ],
-  kthid: 'u1f7tfgo',
-  username: 'tholind',
-  email: 'tholind@kth.se',
-  affiliation: [ 'employee', 'member', 'staff' ],
-  memberOf: [ 'pa.anstallda.T', 'pa.anstallda.T.TRAA' ],
-  apptype: 'Confidential',
-  appid: 'xxxxx',
-  authmethod: 'urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport',
-  ver: '1.0',
-  scp: 'openid'
-}
+Decoded ID Token: 
+decodedIdToken: {
+    aud: 'xxxxx',
+    iss: 'https://login.ug.kth.se/adfs',
+    iat: 1764752747,
+    nbf: 1764752747,
+    exp: 1764756347,
+    auth_time: 1764752729,
+    mfa_auth_time: 1764752747,
+    sub: 'xxxxx',
+    upn: 'tholind@ug.kth.se',
+    sid: 'xxxxx',
+    unique_name: [ 'Thomas Lind', 'UG\\tholind' ],
+    kthid: 'u1f7tfgo',
+    username: 'tholind',
+    email: 'tholind@kth.se',
+    affiliation: [ 'employee', 'member', 'staff' ],
+    memberOf: [
+      'mail.funktionsadresser.it-ansvariga',
+      'mail.uf.ITE.RT-Users',
+      'mail.skolor.ECE.abuse',
+      'STAFF-utskick',
+      'mail.shared.ece.alma',
+      'test_test',
+      'aff_staff',
+      'mail.shared.ece.electrumbiblioteket-skrivare',
+      'mail.shared.ece.huvudbiblioteket-skrivare',
+      'mail.shared.ece.haningebiblioteket-skrivare',
+      'mail.shared.ece.telgebiblioteket-skrivare',
+      'mail.shared.ece.flemingbiblioteket-skrivare',
+      'citrix.win7',
+      'pa.anstallda.T.TRAA',
+      'mail.equipment.gvs.kthb-talboksservice',
+      'org.gvs.kthb-digital-kundtjanst',
+      'mail.equipment.gvs.kthb-inlasningstjanst',
+      'mail.shared.gvs.system-kthb',
+      'mail.uf.kthb-sou'
+    ],
+    apptype: 'Confidential',
+    appid: 'xxxxx',
+    authmethod: 'urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport',
+    ver: '1.0',
+    scp: 'openid'
+  }
+
+
