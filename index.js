@@ -123,7 +123,6 @@ appRoutes.get(`/login`, (req, res) => {
       state: state,
     });
   
-    console.log('Redirecting to OIDC provider:', authUrl);
     res.redirect(authUrl);
 });
 

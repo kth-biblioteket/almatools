@@ -282,7 +282,6 @@ async function getAllConfig(req, res) {
 
 async function updateConfig(req, res) {
     try {
-        console.log(req.body);
         const configs = req.body.configs;
         const promises = Object.entries(configs).map(async ([key, obj]) => {
             const value = obj.value;
