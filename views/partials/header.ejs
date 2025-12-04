@@ -125,18 +125,35 @@
                 <span>Menu</span>
             </button>
             <div class="userinfo-container">
-                <% if (user) { %>
+                <% if (user) { 
+                    // Förbereder listor till kommaseparerade strängar för snyggare visning
+                    const affiliationList = Array.isArray(user.affiliation) ? user.affiliation.join(', ') : user.affiliation || 'Ej tillgänglig';
+                    const memberOfList = Array.isArray(user.memberOf) ? user.memberOf.join(', ') : user.memberOf || 'Ej tillgänglig';
+                %>
                     <details class="user-dropdown">
                         <summary class="user-summary">
                             <span class="kth-icon-user" aria-hidden="true"></span>
-                            <span class="username"><%= user.name %></span>
+                            <span class="username"><%= user.username %></span>
                             <span class="dropdown-arrow">&#9662;</span>
                         </summary>
                         
                         <div class="user-dropdown-content">
-                            <div class="user-detail-item">
-                                Grupper: <%= user.memberOf %>
-                            </div> 
+                            <ul>
+                                <li>
+                                    <div class="user-detail-label">E-post:</div>
+                                    <div class="user-detail-value"><%= user.email || 'Ej angiven' %></div>
+                                </li>
+                                
+                                <li>
+                                    <div class="user-detail-label">Affiliation:</div>
+                                    <div class="user-detail-value"><%= affiliationList %></div>
+                                </li>
+                                
+                                <li>
+                                    <div class="user-detail-label">Grupper:</div>
+                                    <div class="user-detail-value user-groups"><%= memberOfList %></div>
+                                </li>
+                            </ul> 
                             <a href="/almatools/logout" class="logout-link">Log out</a>
                         </div>
                     </details>

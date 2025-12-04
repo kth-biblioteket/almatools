@@ -40,10 +40,44 @@ nav.kth-mega-menu,
     flex-direction: column;
 }
 
-.user-detail-item {
+.user-dropdown-content ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0 0 10px 0; /* Marginal i botten av listan innan logout-länken */
+}
+
+/* Stil för varje rad (list-element) */
+.user-dropdown-content li {
+    display: flex; /* Använd flexbox för justering av etikett/värde */
     padding: 5px 0;
-    border-bottom: 1px solid #eee;
+    font-size: 0.9em;
+    border-bottom: 1px dashed #eee;
+}
+
+.user-dropdown-content li:last-of-type {
+    border-bottom: none; /* Ingen linje på sista raden */
+}
+
+/* Etiketten (E-post, Grupper, etc.) */
+.user-detail-label {
+    font-weight: bold;
+    color: #555;
+    min-width: 90px; /* Säkra bredden på etiketten */
+    flex-shrink: 0;
+}
+
+/* Värdet (tholind@kth.se, etc.) */
+.user-detail-value {
+    word-break: break-word; /* Tillåt långa strängar att brytas */
+    flex-grow: 1;
+    color: #333;
     white-space: nowrap;
+}
+
+/* Gör grupper lite mindre om listan blir väldigt lång */
+.user-groups {
+    font-size: 0.9em;
+    color: #777;
 }
 
 .logout-link {
