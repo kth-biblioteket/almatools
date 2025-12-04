@@ -114,22 +114,26 @@
                     </div>
                 </dialog>
             </nav>
-            <!-- Mobile menu -->
-            <!--ul class="kth-header__tools">
-                <li>
-                    <a class="kth-menu-item language" title="Visa översättning" hreflang="sv-SE" type="text/html"
-                        href="#">Svenska</a>
-                </li>
-            </ul-->
             <button class="kth-menu-item menu collapsable">
                 <span>Menu</span>
             </button>
             <div class="userinfo-container">
                 <% if (user) { 
-                    // Förbereder listor till kommaseparerade strängar för snyggare visning
                     const affiliationList = Array.isArray(user.affiliation) ? user.affiliation.join(', ') : user.affiliation || 'Ej tillgänglig';
-                    const filteredMembers = Array.isArray(user.memberOf) ? user.memberOf.filter(group => typeof group === 'string' && group.includes('pa.anstallda')) : [];
-                    const memberOfList = filteredMembers.length > 0 ? filteredMembers.join(', ') : 'Ej tillgänglig';
+                    let memberOfList = 'Ej tillgänglig';
+
+                    if (Array.isArray(user.memberOf)) {
+                        const filteredMembers = user.memberOf.filter(group => 
+                            typeof group === 'string' && group.includes('pa.anstallda')
+                        );
+                        
+                        if (filteredMembers.length > 0) {
+                            memberOfList = filteredMembers.join(', ');
+                        }
+                    
+                    } else if (typeof user.memberOf === 'string' && user.memberOf.includes('pa.anstallda')) {
+                        memberOfList = user.memberOf;   
+                    }
                 %>
                     <details class="user-dropdown">
                         <summary class="user-summary">
