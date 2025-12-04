@@ -111,15 +111,48 @@ const readNewbooks = (req) => {
 };
 
 const readFailedLibrisImports = (req) => {
+    const { status, sort } = req.query;
+    
     let sql = `SELECT * FROM libris_import_records`;
+    let conditions = [];
+    let orderBy = 'ORDER BY last_attempt DESC';
+
+    if (status) {
+        if (status === 'max_attempts') {
+             conditions.push(`status = ${database.mysql.escape('max_attempts')} AND attempts >= 5`);
+        } else if (status === 'failed') {
+             conditions.push(`status != ${database.mysql.escape('success')} AND status != ${database.mysql.escape('max_attempts')}`);
+        } else if (status === 'success') {
+             conditions.push(`status = ${database.mysql.escape('success')}`);
+        }
+    }
+
+    if (conditions.length > 0) {
+        sql += ` WHERE ${conditions.join(' AND ')}`;
+    }
+
+    if (sort) {
+        switch (sort) {
+            case 'last_attempt_asc':
+                orderBy = 'ORDER BY last_attempt ASC';
+                break;
+            case 'attempts_desc':
+                orderBy = 'ORDER BY attempts DESC, last_attempt DESC';
+                break;
+            case 'attempts_asc':
+                orderBy = 'ORDER BY attempts ASC, last_attempt DESC';
+                break;
+        }
+    }
+    
+    sql += ` ${orderBy}`;
   
     return new Promise(function (resolve, reject) {    
-        database.db.query(database.mysql.format(sql),(err, result) => {
+         database.db.query(sql, (err, result) => { 
             if(err) {
               console.error('Error executing query:', err);
               reject(err.message)
             }
-            const successMessage = "Success"
             resolve(result);
         });
     })

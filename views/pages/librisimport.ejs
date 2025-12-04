@@ -102,6 +102,32 @@ table {
 
                 <h1>Importerade Libris-poster</h1>
                 <div id="alertPlaceholder"></div>
+                <div class="filter-controls" style="margin-bottom: 1rem; display: flex; gap: 1rem; align-items: center;">
+        
+                    <label for="statusFilter">Status:</label>
+                    <select id="statusFilter" class="form-control">
+                        <option value="all">Alla</option>
+                        <option value="failed" selected>Misslyckade (❌)</option>
+                        <option value="success">Lyckade (✅)</option>
+                        <option value="max_attempts">Max Omfrörsök</option>
+                    </select>
+
+                    <label for="sortFilter">Sortera:</label>
+                    <select id="sortFilter" class="form-control">
+                        <option value="last_attempt_desc">Senaste (Tidpunkt ↓)</option>
+                        <option value="last_attempt_asc">Äldsta (Tidpunkt ↑)</option>
+                        <option value="attempts_desc">Flest Omförsök</option>
+                        <option value="attempts_asc">Färst Omförsök</option>
+                    </select>
+
+                    <button id="applyFiltersBtn" class="kth-btn">Uppdatera</button>
+
+                    <label style="margin-left: 1rem;">
+                        <input type="checkbox" id="autoRefreshCheckbox"> Automatisk uppdatering
+                    </label>
+
+                    <span id="loadingIndicator" style="display: none;"> Laddar... </span>
+                </div>
                 <div class="table-responsive">
                     <table border="1" cellpadding="5">
                         <thead>
@@ -118,83 +144,16 @@ table {
                                 <th>Åtgärd</th>
                             </tr>
                         </thead>
-                    <tbody id="recordsBody">
-                            <% records.forEach(r=> { %>
-                                <tr>
-                                    <td>
-                                        <%= r.id %>
-                                    </td>
-                                    <td>
-                                        <%= r.libris_id %>
-                                    </td>
-                                    <td>
-                                        <%= r.record_type %>
-                                    </td>
-                                    
-                          
-                                    <td class="record-cell">
-                                        <div class="record-full json-scroll"><% if (r.marcTable && r.marcTable.length > 0) { %><table class="marc-table" border="1" cellpadding="3">
-                                                <colgroup>
-                                                    <col style="width: 10%">
-                                                    <col style="width: 8%">
-                                                    <col style="width: 8%">
-                                                    <col style="width: 74%">
-                                                </colgroup>
-                                                <thead>
-                                                <tr>
-                                                    <th>Tag</th>
-                                                    <th>I1</th>
-                                                    <th>I2</th>
-                                                    <th>Subfield data</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <% r.marcTable.forEach(row => { %>
-                                                    <tr>
-                                                    <td><%= row.tag %></td>
-                                                    <td><%= row.i1 %></td>
-                                                    <td><%= row.i2 %></td>
-                                                    <td><%= row.data %></td>
-                                                    </tr>
-                                                <% }) %>
-                                                </tbody>
-                                            </table>
-                                            <% } else { %>
-                                            <em>Inget MARC-data</em>
-                                            <% } %>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <%= r.message %>
-                                    </td>
-                                    <td>
-                                        <%= r.attempts %>
-                                    </td>
-                                    <td>
-                                        <%= r.mail_sent ? '✅' : '❌' %>
-                                    </td>
-                                    <td>
-                                        <%= new Date(r.last_attempt).toLocaleString('sv-SE') %>
-                                    </td>
-                                    <td>
-                                        <%= r.status=='success' ? '✅' : '❌'; %>
-                                    </td>
-                                    <td>
-                                        <% if (r.attempts >= 5 && r.status === 'max_attempts') { %>
-                                            <button class="retry-btn" data-id="<%= r.id %>">🔄</button>
-                                        <% } %>
-                                    </td>
-                                </tr>
-                                <% }) %>
+                        <tbody id="recordsBody">
                         </tbody>
                     </table>
                 </div>
             </div>
     </body>
     <script>
-        /** Konfig */
         const REFRESH_MS = <%- JSON.stringify(refreshMs) %>;
-        /** Hjälp: escape för text innan vi sätter innerHTML */
+        let refreshIntervalId = null;
+
         function escapeHtml(str = '') {
             return String(str)
             .replace(/&/g, '&amp;')
@@ -230,18 +189,48 @@ table {
             }
         }
 
-        /** Ladda poster från server (förväntar JSON-array från /failedlibrisrecords/json) */
-        async function loadRecords() {
+        function startAutoRefresh() {
+            if (refreshIntervalId === null) {
+                refreshIntervalId = setInterval(() => loadRecords(false), REFRESH_MS);
+            }
+        }
+
+        function stopAutoRefresh() {
+            if (refreshIntervalId !== null) {
+                clearInterval(refreshIntervalId);
+                refreshIntervalId = null;
+            }
+        }
+
+        async function loadRecords(showLoading = true) {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            
+            if (showLoading) {
+                loadingIndicator.style.display = 'inline';
+            }
+            
+            const statusFilter = document.getElementById('statusFilter').value;
+            const sortFilter = document.getElementById('sortFilter').value;
+
             try {
-                url = '/almatools/failedlibrisrecords/json';
+
+                const params = new URLSearchParams();
+                if (statusFilter !== 'all') {
+                    params.append('status', statusFilter);
+                }
+                if (sortFilter) {
+                    params.append('sort', sortFilter);
+                }
+
+                const url = `/almatools/failedlibrisrecords/json?${params.toString()}`;
+                
                 const res = await fetch(url, { cache: 'no-cache' });
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 const data = await res.json();
-
+                
                 const table = document.querySelector('table');
                 if (!table) return;
 
-                // Se till att tbody finns
                 let tbody = table.querySelector('tbody');
                 if (!tbody) {
                     tbody = document.createElement('tbody');
@@ -249,10 +238,8 @@ table {
                     table.appendChild(tbody);
                 }
 
-                // töm tbody
                 tbody.innerHTML = '';
 
-                // fyll med rader (escapeHtml)
                 data.forEach(r => {
                     const id = escapeHtml(r.id);
                     const librisId = escapeHtml(r.libris_id);
@@ -265,12 +252,12 @@ table {
                     const recordPreview = escapeHtml((r.record || '').substring(0,200));
                     const recordFull = escapeHtml(r.record || '');
                     const recordMarc = escapeHtml(r.marcTable || '');
-
                     const tr = document.createElement('tr');
+                    
                     tr.innerHTML = `
-                        <td>${id}</td>
-                        <td>${librisId}</td>
-                        <td>${recordType}</td>
+                        <td>${escapeHtml(r.id)}</td>
+                        <td>${escapeHtml(r.libris_id)}</td>
+                        <td>${escapeHtml(r.record_type)}</td>
                         <td class="record-cell">
                             <div class="record-full json-scroll"><table class="marc-table" border="1" cellpadding="3">
                                     <colgroup>
@@ -313,17 +300,20 @@ table {
             } catch (err) {
                 console.error('Fel vid laddning av poster:', err);
                 alertMessage('Kunde inte ladda poster: ' + (err.message || err), 'warning', 'alertPlaceholder', false);
+            } finally {
+                if (showLoading) {
+                    loadingIndicator.style.display = 'none';
+                }
             }
         }
 
-        /** Delegated event handling (sitter kvar oavsett om tbody byts ut) */
         function bindDelegatedHandlers() {
+            
             const table = document.querySelector('table');
             if (!table) return;
 
             // Delegation på tbody (skapar listener en gång)
             table.addEventListener('click', async (e) => {
-                // Retry-knapp
                 const retryBtn = e.target.closest('.retry-btn');
                 if (retryBtn) {
                     const id = retryBtn.dataset.id;
@@ -343,16 +333,40 @@ table {
                     } finally {
                         retryBtn.disabled = false;
                         // Ladda om listan efter försöket
-                        loadRecords();
+                        loadRecords(false);
                     }
                     return;
                 }
             });
+
+            const applyFiltersBtn = document.getElementById('applyFiltersBtn');
+            if (applyFiltersBtn) {
+                applyFiltersBtn.addEventListener('click', () => {
+                    loadRecords();
+                });
+            }
+
+            const autoRefreshCheckbox = document.getElementById('autoRefreshCheckbox');
+            if (autoRefreshCheckbox) {
+                autoRefreshCheckbox.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        startAutoRefresh();
+                    } else {
+                        stopAutoRefresh();
+                    }
+                });
+            }
         }
-        /** Init när DOM är redo */
+
         document.addEventListener('DOMContentLoaded', () => {
             bindDelegatedHandlers();
-            setInterval(loadRecords, REFRESH_MS);
+            
+            loadRecords(false);
+
+            const autoRefreshCheckbox = document.getElementById('autoRefreshCheckbox');
+            if (autoRefreshCheckbox && autoRefreshCheckbox.checked) {
+                startAutoRefresh();
+            }
         });
     </script>
 
