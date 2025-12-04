@@ -1,0 +1,65 @@
+nav.kth-mega-menu,
+.kth-menu-item.collapsable {
+    margin-right: auto;
+}
+
+.user-dropdown {
+    /* Ta bort den standardmässiga triangeln/pilen som details skapar */
+    list-style: none;
+    cursor: pointer;
+    position: relative; /* Nödvändigt för att positionera menyns innehåll */
+}
+
+.user-dropdown summary {
+    /* Ta bort extra utrymme/pil i vissa webbläsare */
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.user-dropdown summary::-webkit-details-marker {
+    display: none;
+}
+
+.user-dropdown-content {
+    position: absolute;
+    /* Placera drop-down-menyn nedanför och till höger om användarnamnet */
+    top: 100%; 
+    right: 0; 
+    
+    /* Styling av menyrutan */
+    min-width: 200px;
+    color: #000; /* Svart text */
+    background-color: #fff; /* Vit bakgrund */
+    border: 1px solid #ccc; 
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Liten skugga */
+    z-index: 10; /* Se till att den ligger över andra element */
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-detail-item {
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+    white-space: nowrap;
+}
+
+.logout-link {
+    padding: 5px 0;
+    margin-top: 5px;
+    text-align: right; /* Logga ut-länken till höger i drop-down */
+    color: #a00; /* KTH-röd färg (om tillämpligt) */
+    text-decoration: none;
+}
+
+.dropdown-arrow {
+    margin-left: 5px;
+    transition: transform 0.2s ease-in-out;
+}
+
+/* Roterar pilen när details-elementet är öppet */
+.user-dropdown[open] .dropdown-arrow {
+    transform: rotate(180deg);
+}

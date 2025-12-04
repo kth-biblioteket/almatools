@@ -18,7 +18,7 @@ async function login(req, res) {
             maxAge: 60 * 60 * 24 * 7 * 1000,
             sameSite: 'lax',
             httpOnly: true,
-            secure: process.env.NODE_ENV !== "development", //om denna sätts till secure vid localhost så sätts ingen cookie!
+            secure: process.env.NODE_ENV === "production",
         })
         .status(200)
         .json({ message: "Success" });

@@ -90,15 +90,7 @@ appRoutes.get("/index", (req, res) => {
     if (!req.session.user) {
         return res.redirect(process.env.APP_PATH + '/login');
     }
-    console.log("index: ", req.session.user);
-    if (process.env.NODE_ENV === 'development') {
-        req.session.user = {
-            name: 'Test User',
-            memberOf: ['testgroup','pa.anstallda.T.TR'], // Lägg till behörigheter som behövs
-            email: 'test@example.com'
-        };
-        res.render('pages/almatools', { user: req.session.user });
-    }
+    
     res.render('pages/almatools', { user: req.session.user.decodedIdToken });
 });
 
@@ -115,22 +107,12 @@ appRoutes.get(`/login`, (req, res) => {
     
     const state = crypto.randomBytes(16).toString('hex');
     req.session.state = state;
-    if (process.env.NODE_ENV === 'development') {
-        
-        req.session.user = {
-            name: 'Test User',
-            memberOf: ['testgroup','pa.anstallda.T.TR'], // Lägg till behörigheter som behövs
-            email: 'test@example.com'
-        };
-        return res.redirect('/'); // Skicka vidare till appen
-    }
-
-
+    
     const { action } = req.query;
   
     let redirectUri = OIDC_CONFIG.redirectURI;
     if (action === 'activatepatron') {
-        redirectUri += `?action=activatepatron`; // Append action to redirect URI
+        redirectUri += `?action=activatepatron`;
     }
     
     const authUrl = `${OIDC_CONFIG.authorizationURL}?` + qs.stringify({
@@ -476,7 +458,7 @@ appRoutes.get("/payment/checkout", async function (req, res, next) {
 })
 
 // Librisimport - sida för att omförsöka misslyckade poster
-appRoutes.get("/librisimport",Controllers.readFailedLibrisImports)
+appRoutes.get("/librisimport", VerifyRole(process.env.AUTHORIZEDGROUPS ? process.env.AUTHORIZEDGROUPS.split(';') : []), Controllers.readFailedLibrisImports)
 
 // Trigga omförsök på en post
 appRoutes.post("/retrylibrisimport/:id",Controllers.retryFailedLibrisImports)
@@ -485,7 +467,7 @@ appRoutes.post("/retrylibrisimport/:id",Controllers.retryFailedLibrisImports)
 appRoutes.get('/failedlibrisrecords/json', Controllers.getFailedLibrisRecordsJson);
 
 // Visa config-sidan
-appRoutes.get('/config', Controllers.getAllConfig);
+appRoutes.get('/config', VerifyRole(process.env.AUTHORIZEDGROUPS ? process.env.AUTHORIZEDGROUPS.split(';') : []), Controllers.getAllConfig);
 
 // Spara ändringar
 appRoutes.post('/config/update', Controllers.updateConfig);
