@@ -55,6 +55,6 @@ CREATE TABLE IF NOT EXISTS `system_config` (
 
 CREATE TABLE IF NOT EXISTS `system_status` (
   `id` int AUTO_INCREMENT PRIMARY KEY NOT NULL,
-  `key` varchar(100) NOT NULL,
+  `key` varchar(100) NOT NULL UNIQUE,
   `value` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
