@@ -1,6 +1,7 @@
 # KTH Bibliotekets Alma Verktyg
 
 ## Nya böcker
+Sida för att visa nya böcker som finns i Alma/Primo(hämtas vis alma analytics)
 
 ## Alma Payment
 Hanterar betalning online för avgifter etc i Alma/Primo
