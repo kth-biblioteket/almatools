@@ -300,7 +300,7 @@ function createbooklist() {
                             `<div class="bookitem">
                                 <div class="bookcover">`
                                 if (response[i].coverurl && response[i].coverurl != `${window.$newbooks.nocoverurl}`) {
-                                    template += `<img class="bookcoverimage" src="${response[i].coverurl}">`
+                                    template += `<img class="bookcoverimage" src="${response[i].coverurl}" alt="">`
                                 } else {
                                     template += `<div class="shape">${response[i].title.replace('/', '').trim().substring(0,150)}</div>`
                                 }  

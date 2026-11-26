@@ -1891,6 +1891,7 @@ function SimpleItem(data, context) {
 
 	// Load the image asynchronously
 	var image = new Image();
+	image.alt = (data && data['title']) || '';
 	var loaded = false;
 	function ready() {
 		if (loaded) {

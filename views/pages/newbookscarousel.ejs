@@ -1,6 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="<%= almatoolsconfig.lang === 'en' ? 'en' : 'sv' %>">
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= almatoolsconfig.lang === 'en' ? 'New books' : 'Nya böcker' %> - KTH Library</title>
     <%- include('../partials/newbookshead'); %>
 </head>
 

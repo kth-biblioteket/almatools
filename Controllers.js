@@ -195,6 +195,7 @@ async function getNewbooksCarousel(req, res) {
             bookimageurl: process.env.BOOKIMAGEURL,
             book200imageurl: process.env.BOOK200IMAGEURL,
             nojquery: req.query.nojquery || false,
+            lang: lang,
         }
         
         res.render('pages/newbookscarousel', 
